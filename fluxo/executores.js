@@ -35,5 +35,5 @@ export const executores = {
   cia: executarCia,
   pelotao: executarPelotao,
   natureza: executarNatureza,
-  formaAcionamento: executarformaAcionamento,
+  formaAcionamento: executarformaAcionamento
 };
