@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import resenhaRoutes from './routes/resenha.js';
+import webhookRouter from './routes/zapi.js';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use('/api/resenha', webhookRouter);
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log('✅ Conectado ao MongoDB');
