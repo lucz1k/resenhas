@@ -32,7 +32,7 @@ O **ResenhaApp** é um assistente automatizado para elaboração de ocorrências
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/resenhaapp.git
+git clone https://github.com/seu-usuario/nome.git
 cd resenhaapp
 ```
 
@@ -125,4 +125,4 @@ https://SEU_BACKEND.onrender.com/api/resenha/webhook/whatsapp
 
 ## 🙌 Desenvolvido por
 
-Lucas Artigiani | PMESP | 2025
+Lucz1k | 2025
