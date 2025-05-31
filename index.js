@@ -12,8 +12,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// Middleware de logging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // ✅ Rota do Webhook (ex: Z-API) separada
-app.use('/webhook', webhookRouter);
+app.use('/api/webhook', webhookRouter);
 
 // ✅ Rota da API de resenhas
 app.use('/api/resenha', resenhaRoutes);

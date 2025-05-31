@@ -14,7 +14,7 @@ const ZAPI_BASE_URL = `https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/
 const router = express.Router();
 
 // Rota do webhook de entrada (Z-API)
-router.post('/webhook/whatsapp', handleWebhook);
+router.post('/whatsapp', handleWebhook);
 
 export default router;
 
