@@ -1,19 +1,32 @@
-export async function executargrandeComando(resposta) {
-  const texto = resposta.trim().toUpperCase().replace(/\s+/g, '');
+// fluxo/tipos/grandeComando.js
 
-  const padraoValido = /^(CPA-M\/\d+|CPI-\d+|CPCHQ|CPC|CPM)$/;
+export async function executarGrandeComando(resposta, dados) {
+  const texto = resposta.trim().toUpperCase();
 
-  if (!padraoValido.test(texto)) {
+  // Validações simples
+  const formatosValidos = [
+    /^CPA-M\/\d+$/,     // CPA-M/10
+    /^CPI-\d+$/,        // CPI-1
+    /^CPCHQ$/,          // CPChq
+    /^CPC$/,            // CPC
+    /^CPM$/             // CPM
+  ];
+
+  const valido = formatosValidos.some((regex) => regex.test(texto));
+
+  if (!valido) {
     return {
       proximaEtapa: 'grandeComando',
-      mensagemResposta: '❌ Formato inválido. Use exemplos como: CPA-M/6, CPI-2, CPChq, CPC ou CPM.',
+      mensagemResposta: '❌ Formato inválido. Envie algo como: CPA-M/10, CPI-1, CPChq, CPC ou CPM.',
       dadoExtraido: null,
     };
   }
 
+  dados.grandeComando = texto;
+
   return {
     proximaEtapa: 'batalhao',
-    mensagemResposta: `Grande Comando registrado: *${texto}*`,
-    dadoExtraido: `*${texto}*`,
+    mensagemResposta: '✅ Grande comando registrado. Informe agora o Batalhão (ex: 10º BPM/M, 3º BPChq, etc).',
+    dadoExtraido: texto,
   };
 }
