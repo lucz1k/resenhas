@@ -3,7 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import resenhaRoutes from './routes/resenha.js';
-import webhookRouter from './routes/zapi.js';
+import webhookRouter from './services/zapi.js';
 
 dotenv.config();
 
