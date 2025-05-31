@@ -2,7 +2,7 @@ import { proxySecurity, limitesAbuso, interpretarNaturezaPrefixo, montarResenhaF
 import { etapasFluxo } from '../fluxo/etapasFluxo.js';
 import { chatCompletions } from '../services/openai.js';
 import { enviarMensagem } from '../services/zapi.js';
-import { obterProgresso, salvarProgresso, resetarProgresso } from '../db/progresso.js';
+import { obterProgresso, salvarProgresso, limparProgresso as resetarProgresso } from '../db/progresso.js';
 
 const resenhaController = {
   async receberMensagem(mensagem) {
@@ -10,20 +10,17 @@ const resenhaController = {
     const texto = (mensagem.body || '').trim();
     const ip = mensagem?.sender?.ip || 'desconhecido';
 
-    // Ignorar mensagens enviadas pelo próprio bot
     if (mensagem?.fromMe === true) {
       console.log(`[IGNORADO] Mensagem enviada por mim mesmo: ${texto}`);
       return;
     }
 
-    // Comando especial para resetar progresso
     if (texto.toLowerCase() === '#reset') {
       await resetarProgresso(telefone);
       await enviarMensagem(telefone, '🔄 Progresso da resenha resetado com sucesso. Vamos começar novamente.');
       return;
     }
 
-    // 1. Proteções
     if (limitesAbuso.verificarAbuso(telefone)) {
       return enviarMensagem(telefone, '🚫 Limite de uso excedido. Tente novamente mais tarde.');
     }
@@ -32,10 +29,8 @@ const resenhaController = {
       return enviarMensagem(telefone, '❌ Mensagem inválida ou não suportada.');
     }
 
-    // 2. Registrar log
     proxySecurity.registrarLog({ telefone, ip, prompt: texto });
 
-    // 3. Obter ou iniciar progresso
     let progresso = await obterProgresso(telefone);
     if (!progresso) {
       progresso = { etapaAtual: 'grandeComando', dados: {} };
@@ -52,20 +47,16 @@ const resenhaController = {
     }
 
     try {
-      // 4. Executar etapa
       const { proximaEtapa, mensagemResposta, dadoExtraido } = await etapa.executar(texto, progresso.dados, telefone);
 
-      // 5. Atualizar progresso
       progresso.dados[progresso.etapaAtual] = dadoExtraido;
       progresso.etapaAtual = proximaEtapa;
 
       await salvarProgresso(telefone, progresso);
       console.log(`[ETAPA] ${etapa.chave} concluída com:`, dadoExtraido);
 
-      // 6. Responder
       await enviarMensagem(telefone, mensagemResposta);
 
-      // 7. Finalizar, se necessário
       if (proximaEtapa === 'FINALIZAR') {
         const resenha = await montarResenhaFinal(progresso.dados);
         await finalizarResenha(telefone, resenha, enviarMensagem, () => {});
@@ -77,5 +68,10 @@ const resenhaController = {
     }
   }
 };
+
+// 🔄 Função pública que será chamada pelo webhook
+export async function processarMensagem(mensagem) {
+  return resenhaController.receberMensagem(mensagem);
+}
 
 export default resenhaController;
