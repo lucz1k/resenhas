@@ -21,6 +21,8 @@ export async function enviarMensagem(telefone, mensagem) {
       message: mensagem,
     };
 
+    console.log('Enviando para Z-API:', body);
+
     const response = await fetch(`${ZAPI_BASE_URL}/send-text`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
