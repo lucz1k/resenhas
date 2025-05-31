@@ -16,7 +16,7 @@ import { executarObjetos } from './tipos/objetos.js';
 import { executarArmamentos } from './tipos/armamentos.js';
 import { executarHistorico } from './tipos/historico.js';
 import { executarFormaAcionamento } from './tipos/formaAcionamento.js';
-import { executarGrandeComando} from './tipos/grandeComando.js';
+import { executarGrandeComando } from './tipos/grandeComando.js';
 
 export const executores = {
   texto: executarTexto,
@@ -36,5 +36,5 @@ export const executores = {
   pelotao: executarPelotao,
   natureza: executarNatureza,
   formaAcionamento: executarFormaAcionamento,
-  grandeComando: executarGrandeComando
+  grandeComando: executarGrandeComando,
 };
