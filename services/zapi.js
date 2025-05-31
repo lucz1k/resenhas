@@ -17,7 +17,7 @@ export default router;
 export async function enviarMensagem(telefone, mensagem) {
   try {
     const body = {
-      phone: numero,
+      phone: telefone, // Corrigido aqui
       message: mensagem,
     };
 
