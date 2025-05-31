@@ -29,3 +29,9 @@ export function formatarPosto(nome) {
 export function removerCaracteresEspeciais(texto) {
   return texto.replace(/[^\w\s]/gi, '').trim();
 }
+
+export function formatarTextoEquipe(viatura, nomes) {
+  const cabecalho = viatura ? `Viatura: ${viatura}` : '';
+  const lista = nomes && nomes.length > 0 ? nomes.map(p => `- ${formatarPosto(p)}`).join('\n') : '';
+  return [cabecalho, lista].filter(Boolean).join('\n');
+}
