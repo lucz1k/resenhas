@@ -2,21 +2,18 @@
 import mongoose from 'mongoose';
 import { Progresso } from '../models/models.js';
 
-// Salva ou atualiza o progresso do número informado
-export async function salvarProgresso(numero, progresso) {
+export async function salvarProgresso(telefone, progresso) {
   await Progresso.findOneAndUpdate(
-    { numero },
+    { telefone },
     { $set: progresso },
     { upsert: true, new: true }
   );
 }
 
-// Obtém o progresso atual de um número
-export async function obterProgresso(numero) {
-  return await Progresso.findOne({ numero });
+export async function obterProgresso(telefone) {
+  return await Progresso.findOne({ telefone });
 }
 
-// (Opcional) Zera o progresso de um número
-export async function limparProgresso(numero) {
-  await Progresso.deleteOne({ numero });
+export async function limparProgresso(telefone) {
+  await Progresso.deleteOne({ telefone });
 }
