@@ -1,3 +1,5 @@
+import { interpretarNaturezaPrefixo } from './proxy.js';
+
 export async function montarResenhaFinal(dados) {
   const {
     grandeComando = '',
@@ -22,6 +24,9 @@ export async function montarResenhaFinal(dados) {
     historico = ''
   } = dados;
 
+  // Use a função para converter o código em texto
+  const naturezaPorExtenso = interpretarNaturezaPrefixo(natureza);
+
   const formatarEnvolvidos = (grupo) => (grupo && grupo.length > 0 ? grupo.map(p => `- ${p}`).join('\n') : '');
 
   const resenha = [
@@ -35,7 +40,7 @@ export async function montarResenhaFinal(dados) {
     `*DATA*: ${data}`,
     `*HORA*: ${hora}`,
     '',
-    `*NATUREZA*: ${natureza}`,
+    `*NATUREZA*: ${naturezaPorExtenso}`,
     `*COMPLEMENTO*: ${complementoNatureza}`,
     `*BOPM*: ${bopm}`,
     `*BOPC*: ${bopc} ${delegado ? '– ' + delegado : ''}`,

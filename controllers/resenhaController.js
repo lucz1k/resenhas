@@ -25,7 +25,7 @@ const resenhaController = {
       return enviarMensagem(telefone, '🚫 Limite de uso excedido. Tente novamente mais tarde.');
     }
 
-    if (!proxySecurity.validarMensagem(mensagem)) {
+    if (!proxySecurity(telefone, texto)) {
       return enviarMensagem(telefone, '❌ Mensagem inválida ou não suportada.');
     }
 

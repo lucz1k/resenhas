@@ -1,5 +1,6 @@
 // utils/proxy.js
 import { salvarNoDrive } from '../services/googleDrive.js';
+import { naturezasCompletas } from '../dados/naturezasCompletas.js';
 
 /**
  * Envia a resenha finalizada para o usuário e salva no Google Drive.
@@ -21,10 +22,29 @@ export async function finalizarResenha(telefone, textoFinal, enviarMensagem, cal
 
 /**
  * Segurança do proxy – valida se pode continuar o processamento.
- * (Placeholder, ajuste conforme sua lógica de segurança futura)
+ * Bloqueia números ou mensagens indesejadas.
  */
 export function proxySecurity(telefone, mensagem) {
-  // Exemplo: bloquear certos números ou conteúdos
+  // Lista de números bloqueados
+  const numerosBloqueados = ['5511999999999', '5511888888888'];
+
+  // Lista de palavras proibidas
+  const palavrasProibidas = ['spam', 'ofensa', 'proibido'];
+
+  // Bloqueia se o número estiver na lista
+  if (numerosBloqueados.includes(telefone)) {
+    return false;
+  }
+
+  // Bloqueia se a mensagem contiver alguma palavra proibida
+  if (mensagem && typeof mensagem === 'string') {
+    const texto = mensagem.toLowerCase();
+    if (palavrasProibidas.some(palavra => texto.includes(palavra))) {
+      return false;
+    }
+  }
+
+  // Permite o processamento se passou pelos filtros
   return true;
 }
 
@@ -59,11 +79,12 @@ export function limitesAbuso(telefone) {
  * Interpreta o prefixo de natureza (ex: "ROUBO" ou "FURTO").
  * (Placeholder)
  */
-export function interpretarNaturezaPrefixo(natureza) {
-  if (typeof natureza === 'string') {
-    const upper = natureza.toUpperCase();
-    if (upper.includes('ROUBO')) return 'ROUBO';
-    if (upper.includes('FURTO')) return 'FURTO';
+export function interpretarNaturezaPrefixo(codigoNatureza) {
+  if (typeof codigoNatureza === 'string' || typeof codigoNatureza === 'number') {
+    const codigo = String(codigoNatureza).trim();
+    if (naturezasCompletas[codigo]) {
+      return naturezasCompletas[codigo];
+    }
   }
   return 'OUTROS';
 }
