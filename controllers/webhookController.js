@@ -8,7 +8,7 @@ export async function handleWebhook(req, res) {
     console.log('[Webhook] Mensagem recebida:', JSON.stringify(body));
 
     const telefone = body?.phone;
-    const mensagem = body?.message?.body;
+    const mensagem = body?.text?.message;
 
     if (!telefone || !mensagem) {
       console.warn('⚠️ Webhook sem número ou mensagem');
