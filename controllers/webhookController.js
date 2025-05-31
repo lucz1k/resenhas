@@ -1,5 +1,5 @@
 // controllers/webhookController.js
-import { enviarWhatsApp } from '../zapi.js';
+import { enviarMensagem } from '../services/zapi.js';
 
 export async function handleWebhook(req, res) {
   try {
@@ -16,7 +16,7 @@ export async function handleWebhook(req, res) {
     }
 
     // Aqui é onde você pode chamar seu fluxo de resenha
-    await enviarWhatsApp(telefone, `📨 Recebido: "${mensagem}"`);
+    await enviarMensagem(telefone, `📨 Recebido: "${mensagem}"`);
 
     res.sendStatus(200);
   } catch (err) {

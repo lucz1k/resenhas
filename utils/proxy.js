@@ -8,7 +8,7 @@ export async function finalizarResenha(telefone, textoFinal, enviarMensagem, cal
   try {
     await enviarMensagem(telefone, textoFinal);
 
-    const idArquivo = await salvarNoDrive(textoFinal, `resenha_${numero}.txt`);
+    const idArquivo = await salvarNoDrive(textoFinal, `resenha_${telefone}.txt`);
     await enviarMensagem(telefone, `📁 Resenha salva no Google Drive!\nID do arquivo: ${idArquivo}`);
 
     await enviarMensagem(telefone, '*✅ Resenha finalizada com sucesso!*');
