@@ -28,12 +28,30 @@ export function proxySecurity(telefone, mensagem) {
   return true;
 }
 
+const abuseLimits = new Map();
+const MAX_REQUESTS = 10; // máximo de requisições permitidas por hora
+const WINDOW_MS = 60 * 60 * 1000; // 1 hora
+
 /**
  * Limita o número de requisições para evitar abusos.
  * (Placeholder)
  */
 export function limitesAbuso(telefone) {
-  // Exemplo: limitar por IP, número ou frequência
+  const now = Date.now();
+  let entry = abuseLimits.get(telefone);
+
+  if (!entry || now - entry.start > WINDOW_MS) {
+    // Nova janela de tempo
+    abuseLimits.set(telefone, { count: 1, start: now });
+    return false;
+  }
+
+  entry.count += 1;
+  if (entry.count > MAX_REQUESTS) {
+    return true; // Abuso detectado
+  }
+
+  abuseLimits.set(telefone, entry);
   return false;
 }
 

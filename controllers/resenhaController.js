@@ -21,7 +21,7 @@ const resenhaController = {
       return;
     }
 
-    if (limitesAbuso.verificarAbuso(telefone)) {
+    if (limitesAbuso(telefone)) {
       return enviarMensagem(telefone, '🚫 Limite de uso excedido. Tente novamente mais tarde.');
     }
 
