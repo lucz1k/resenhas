@@ -1,5 +1,3 @@
-// utils/formatadores.js
-
 export function formatarPelotao(valor) {
   return valor.replace(/\d+/, (num) => `${num}º`).replace(/pel/i, 'Pelotão');
 }
@@ -32,6 +30,12 @@ export function removerCaracteresEspeciais(texto) {
 
 export function formatarTextoEquipe(viatura, nomes) {
   const cabecalho = viatura ? `Viatura: ${viatura}` : '';
+  const lista = nomes && nomes.length > 0 ? nomes.map(p => `- ${formatarPosto(p)}`).join('\n') : '';
+  return [cabecalho, lista].filter(Boolean).join('\n');
+}
+
+export function formatarTextoApoio({ tipo, viatura, nomes }) {
+  const cabecalho = tipo && viatura ? `${tipo} – Viatura: ${viatura}` : tipo || viatura || '';
   const lista = nomes && nomes.length > 0 ? nomes.map(p => `- ${formatarPosto(p)}`).join('\n') : '';
   return [cabecalho, lista].filter(Boolean).join('\n');
 }
