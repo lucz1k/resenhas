@@ -6,7 +6,7 @@ const ZAPI_TOKEN = process.env.ZAPI_TOKEN;
 const ZAPI_CLIENT_TOKEN = process.env.ZAPI_CLIENT_TOKEN;
 const ZAPI_BASE_URL = `https://api.z-api.io/instances/3E1FB31F1FB78031E87D62AF4B231A0B/token/F53020EE23BFEE21F29C837D/send-text`;
 
-export async function enviarMensagem(numero, mensagem) {
+export async function enviarMensagem(telefone, mensagem) {
   try {
     const body = {
       phone: numero,

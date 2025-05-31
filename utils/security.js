@@ -3,15 +3,15 @@ export const proxySecurity = {
     return mensagem && mensagem.from && typeof mensagem.body === 'string';
   },
 
-  registrarLog: ({ numero, ip, prompt }) => {
-    console.log(`[LOG] ${new Date().toISOString()} | ${numero} (${ip}) → ${prompt}`);
+  registrarLog: ({ telefone, ip, prompt }) => {
+    console.log(`[LOG] ${new Date().toISOString()} | ${telefone} (${ip}) → ${prompt}`);
   }
 };
 
 export const limitesAbuso = {
   bloqueados: new Set(),
 
-  verificarAbuso: (numero) => {
-    return limitesAbuso.bloqueados.has(numero);
+  verificarAbuso: (telefone) => {
+    return limitesAbuso.bloqueados.has(telefone);
   }
 };
