@@ -1,12 +1,12 @@
-// models.js
+// models/models.js
 import mongoose from 'mongoose';
 
-const progressoSchema = new mongoose.Schema({
-  numero: { type: String, required: true, unique: true },
+const ProgressoSchema = new mongoose.Schema({
+  telefone: { type: String, required: true, unique: true },
   etapaAtual: { type: String, required: true },
-  dados: { type: Object, default: {} },
+  dados: { type: Object, required: true }
 }, { timestamps: true });
 
-const Progresso = mongoose.model('Progresso', progressoSchema);
+const Progresso = mongoose.model('Progresso', ProgressoSchema);
 
-export default Progresso;
+export { Progresso }; // ✅ exportação nomeada compatível com ES Modules
