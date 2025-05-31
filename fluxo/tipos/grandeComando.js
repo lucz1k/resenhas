@@ -1,4 +1,4 @@
-export async function executarGrandecomando(resposta) {
+export async function executargrandeComando(resposta) {
   const texto = resposta.trim().toUpperCase().replace(/\s+/g, '');
 
   const padraoValido = /^(CPA-M\/\d+|CPI-\d+|CPCHQ|CPC|CPM)$/;
