@@ -11,16 +11,19 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use('/api/resenha', webhookRouter);
 
+// ✅ Rota do Webhook (ex: Z-API) separada
+app.use('/webhook', webhookRouter);
+
+// ✅ Rota da API de resenhas
+app.use('/api/resenha', resenhaRoutes);
+
+// ✅ Conexão MongoDB
 mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log('✅ Conectado ao MongoDB');
 }).catch((err) => {
   console.error('❌ Erro ao conectar no MongoDB:', err);
 });
-
-// ✅ Prefixo correto da rota
-app.use('/api/resenha', resenhaRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);

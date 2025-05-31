@@ -1,5 +1,5 @@
 // controllers/webhookController.js
-import { enviarMensagem } from '../services/zapi.js';
+import { processarMensagem } from './resenhaController.js';
 
 export async function handleWebhook(req, res) {
   try {
@@ -15,12 +15,21 @@ export async function handleWebhook(req, res) {
       return res.sendStatus(400);
     }
 
-    // Aqui é onde você pode chamar seu fluxo de resenha
-    await enviarMensagem(telefone, `📨 Recebido: "${mensagem}"`);
+    // Constrói o objeto esperado por processarMensagem
+    const mensagemFormatada = {
+      from: telefone,
+      body: mensagem,
+      fromMe: body.fromMe || false,
+      sender: {
+        ip: req.ip
+      }
+    };
+
+    await processarMensagem(mensagemFormatada);
 
     res.sendStatus(200);
   } catch (err) {
-    console.error('Erro no handleWebhook:', err);
+    console.error('❌ Erro no handleWebhook:', err);
     res.sendStatus(500);
   }
 }
