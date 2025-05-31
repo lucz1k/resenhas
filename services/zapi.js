@@ -19,6 +19,7 @@ export async function enviarMensagem(telefone, mensagem) {
     const body = {
       phone: telefone,
       message: mensagem,
+      client_token: ZAPI_CLIENT_TOKEN, // Incluído aqui
     };
 
     console.log('Enviando para Z-API:', body);
