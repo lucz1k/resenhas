@@ -15,7 +15,8 @@ import { executarVeiculos } from './tipos/veiculos.js';
 import { executarObjetos } from './tipos/objetos.js';
 import { executarArmamentos } from './tipos/armamentos.js';
 import { executarHistorico } from './tipos/historico.js';
-import { executarformaAcionamento } from './tipos/formaAcionamento.js';
+import { executarFormaAcionamento } from './tipos/formaAcionamento.js';
+import { executarGrandeComando} from './tipos/GrandeComando.js';
 
 export const executores = {
   texto: executarTexto,
@@ -30,10 +31,10 @@ export const executores = {
   objetos: executarObjetos,
   armamentos: executarArmamentos,
   historico: executarHistorico,
-  grandeComando: executargrandeComando,
   batalhao: executarBatalhao,
   cia: executarCia,
   pelotao: executarPelotao,
   natureza: executarNatureza,
-  formaAcionamento: executarformaAcionamento
+  formaAcionamento: executarFormaAcionamento,
+  grandeComando: executarGrandeComando
 };
