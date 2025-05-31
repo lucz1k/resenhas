@@ -14,6 +14,9 @@ export async function obterProgresso(telefone) {
   return await Progresso.findOne({ telefone });
 }
 
-export async function resetarProgresso(telefone) {
+export async function limparProgresso(telefone) {
   await Progresso.deleteOne({ telefone });
 }
+
+export const resetarProgresso = limparProgresso;
+
