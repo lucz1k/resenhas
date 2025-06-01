@@ -3,32 +3,32 @@ export const etapasFluxo = [
   {
     chave: 'grandeComando',
     pergunta: 'Qual o GRANDE COMANDO da ocorrência?',
-    tipo: 'texto',
+    tipo: 'grandeComando',
   },
   {
     chave: 'batalhao',
     pergunta: 'Qual o BATALHÃO da ocorrência?',
-    tipo: 'texto',
+    tipo: 'batalhao',
   },
   {
     chave: 'cia',
     pergunta: 'Qual a CIA da ocorrência?',
-    tipo: 'texto',
+    tipo: 'cia',
   },
   {
     chave: 'pelotao',
     pergunta: 'Qual o PELOTÃO da ocorrência?',
-    tipo: 'texto',
+    tipo: 'pelotao',
   },
   {
     chave: 'natureza',
     pergunta: 'Qual a natureza da ocorrência (ex: C04)?',
-    tipo: 'texto',
+    tipo: 'natureza',
   },
   {
     chave: 'complementoNatureza',
     pergunta: 'Complemento da ocorrência (tentado, consumado, envolvendo policial militar etc)',
-    tipo: 'textoOpcional',
+    tipo: 'complementoNatureza',
   },
   {
     chave: 'bopm',
@@ -103,7 +103,7 @@ export const etapasFluxo = [
   {
     chave: 'formaAcionamento',
     pergunta: 'Como a equipe foi acionada para a ocorrência? (Despachada via COPOM, deparou-se na via, populares, ligação/mensagem)',
-    tipo: 'texto',
+    tipo: 'formaaAcionamento',
   },
 
   // Bloco 8 - HISTÓRICO
