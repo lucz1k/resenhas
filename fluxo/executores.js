@@ -24,7 +24,6 @@ import { executarDelegado } from './tipos/delegado.js';
 
 // Mapeia cada tipo de etapa ao seu executor correspondente
 export const executores = {
-  complementoNatureza: executarTexto,
   texto: executarTexto,
   textoOpcional: executarTexto,
   data: executarData,
@@ -46,4 +45,5 @@ export const executores = {
   bopm: executarBopm,
   bopc: executarBopc,
   delegado: executarDelegado,
+  complementoNatureza: executarTexto,
 };

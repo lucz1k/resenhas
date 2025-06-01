@@ -28,7 +28,7 @@ export const etapasFluxo = [
   {
     chave: 'complementoNatureza',
     pergunta: 'Complemento da ocorrência (tentado, consumado, envolvendo policial militar etc)',
-    tipo: 'executarTexto',
+    tipo: 'complementoNatureza', // CERTO
   },
   {
     chave: 'bopm',
