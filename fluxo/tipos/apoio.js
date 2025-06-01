@@ -9,7 +9,8 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
 
   const texto = inputUsuario.trim();
 
-  if (texto.toLowerCase() === 'não' || texto.toLowerCase() === 'nao') {
+  // Verifica resposta negativa
+  if (['não', 'nao', 'n', 'n.'].includes(texto.toLowerCase())) {
     return {
       proximaEtapa: 'envolvidos',
       mensagemResposta: 'Certo, não registrarei viaturas de apoio. Vamos prosseguir para os envolvidos.',
@@ -24,18 +25,25 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
   };
 
   const partes = texto.split('\n');
+
   for (let parte of partes) {
-    parte = parte.trim();
-    if (parte.toLowerCase().startsWith('viatura:')) {
-      novaViatura.viatura = parte.replace(/viatura:/i, '').trim();
-    } else if (parte.toLowerCase().startsWith('autoridade:')) {
-      novaViatura.autoridade = parte.replace(/autoridade:/i, '').trim();
-    } else if (parte) {
-      novaViatura.policiais.push(parte);
+    const linha = parte.trim();
+
+    if (/^viatura:/i.test(linha)) {
+      novaViatura.viatura = linha.replace(/^viatura:/i, '').trim();
+    } else if (/^autoridade:/i.test(linha)) {
+      novaViatura.autoridade = linha.replace(/^autoridade:/i, '').trim();
+    } else if (linha) {
+      novaViatura.policiais.push(linha);
     }
   }
 
-  if (novaViatura.viatura || novaViatura.autoridade || novaViatura.policiais.length > 0) {
+  const apoioVálido =
+    novaViatura.viatura ||
+    novaViatura.autoridade ||
+    novaViatura.policiais.length > 0;
+
+  if (apoioVálido) {
     dadosProgresso.apoios.push(novaViatura);
 
     return {
@@ -47,7 +55,8 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
 
   return {
     proximaEtapa: 'apoios',
-    mensagemResposta: '⚠️ Não consegui entender os dados do apoio. Por favor, envie no formato:\n\nVIATURA: 10502\nAUTORIDADE: 1º Ten PM Cardoso\nCb PM Souza\nSd PM Lima\n\nOu apenas alguns desses campos.',
+    mensagemResposta:
+      '⚠️ Não consegui entender os dados do apoio. Envie no formato:\n\nVIATURA: 10502\nAUTORIDADE: 1º Ten PM Cardoso\nCb PM Souza\nSd PM Lima\n\nOu apenas alguns desses campos.',
     dadoExtraido: dadosProgresso.apoios,
   };
 }

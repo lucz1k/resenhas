@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { Progresso } from '../models/models.js';
 
 export async function salvarProgresso(telefone, progresso) {
-  await Progresso.findOneAndUpdate(
+  return await Progresso.findOneAndUpdate(
     { telefone },
     { $set: progresso },
     { upsert: true, new: true }
@@ -15,7 +15,7 @@ export async function obterProgresso(telefone) {
 }
 
 export async function limparProgresso(telefone) {
-  await Progresso.deleteOne({ telefone });
+  return await Progresso.deleteOne({ telefone });
 }
 
 export const resetarProgresso = limparProgresso;

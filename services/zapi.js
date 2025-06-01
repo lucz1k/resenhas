@@ -25,6 +25,10 @@ export default router;
  */
 export async function enviarMensagem(telefone, mensagem) {
   try {
+    if (!telefone || !mensagem) {
+      throw new Error('Telefone e mensagem são obrigatórios.');
+    }
+
     const body = {
       phone: telefone,
       message: mensagem,
@@ -45,7 +49,9 @@ export async function enviarMensagem(telefone, mensagem) {
     } else {
       console.log('✅ Mensagem enviada com sucesso:', data);
     }
+    return data;
   } catch (err) {
     console.error('❌ Falha ao enviar requisição à Z-API:', err);
+    throw err;
   }
 }

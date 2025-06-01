@@ -100,5 +100,8 @@ export const etapasFluxo = [
 ];
 
 for (const etapa of etapasFluxo) {
+  if (!executores[etapa.tipo]) {
+    throw new Error(`Executor não encontrado para o tipo: ${etapa.tipo}`);
+  }
   etapa.executar = executores[etapa.tipo];
 }

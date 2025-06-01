@@ -1,6 +1,7 @@
 // utils/proxy.js
 import { salvarNoDrive } from '../services/googleDrive.js';
 import { naturezasCompletas } from '../fluxo/dados/naturezasCompletas.js';
+import { formatarTextoArmamentos } from '../utils/formatadores.js';
 
 /**
  * Envia a resenha finalizada para o usuário e salva no Google Drive.
@@ -94,8 +95,20 @@ export function interpretarNaturezaPrefixo(codigoNatureza) {
  * (Placeholder)
  */
 export function montarResenhaFinal(dados) {
-  // Lógica futura de formatação completa
-  return `*Resumo da Ocorrência*\n\n${JSON.stringify(dados, null, 2)}`;
+  const textoArmamentos = Array.isArray(dados.armamentos)
+    ? dados.armamentos.map(formatarTextoArmamentos).join('\n\n')
+    : '';
+
+  const blocoArmamentos = textoArmamentos
+    ? `🔫 *ARMAMENTOS ENVOLVIDOS*\n${textoArmamentos}`
+    : '';
+
+  // Adicione outros blocos conforme necessário
+  return [
+    `*Resumo da Ocorrência*`,
+    blocoArmamentos,
+    // ...outros blocos...
+  ].filter(Boolean).join('\n\n');
 }
 
 export function registrarLog({ telefone, ip, prompt }) {

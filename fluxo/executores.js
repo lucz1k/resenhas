@@ -1,5 +1,6 @@
 // fluxo/executores.js
 
+// Importa todos os executores de etapas do fluxo
 import { executarBatalhao } from './tipos/batalhao.js';
 import { executarCia } from './tipos/cia.js';
 import { executarPelotao } from './tipos/pelotao.js';
@@ -18,6 +19,7 @@ import { executarHistorico } from './tipos/historico.js';
 import { executarFormaAcionamento } from './tipos/formaAcionamento.js';
 import { executarGrandeComando } from './tipos/grandeComando.js';
 
+// Mapeia cada tipo de etapa ao seu executor correspondente
 export const executores = {
   texto: executarTexto,
   textoOpcional: executarTexto,

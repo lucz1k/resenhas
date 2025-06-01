@@ -10,7 +10,7 @@ export async function handleWebhook(req, res) {
     const telefone = body?.phone;
     const mensagem = body?.text?.message;
 
-    if (!telefone || !mensagem) {
+    if (!telefone || !mensagem || !mensagem.trim()) {
       console.warn('⚠️ Webhook sem número ou mensagem');
       return res.sendStatus(400);
     }

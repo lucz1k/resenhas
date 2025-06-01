@@ -24,13 +24,13 @@ export async function executarVeiculos(resposta, dados) {
   const situacaoRegex = /situação\s*[:\-]?\s*([^\n,]+)/i;
 
   const veiculo = {
-    placa: (resposta.match(placaRegex)?.[1] || '').toUpperCase(),
-    modelo: resposta.match(modeloRegex)?.[1] || '',
-    cor: resposta.match(corRegex)?.[1] || '',
-    marca: resposta.match(marcaRegex)?.[1] || '',
-    ano: resposta.match(anoRegex)?.[1] || '',
-    chassi: resposta.match(chassiRegex)?.[1] || '',
-    situacao: resposta.match(situacaoRegex)?.[1] || '',
+    placa: (resposta.match(placaRegex)?.[1] || '').toUpperCase().trim(),
+    modelo: (resposta.match(modeloRegex)?.[1] || '').trim(),
+    cor: (resposta.match(corRegex)?.[1] || '').trim(),
+    marca: (resposta.match(marcaRegex)?.[1] || '').trim(),
+    ano: (resposta.match(anoRegex)?.[1] || '').trim(),
+    chassi: (resposta.match(chassiRegex)?.[1] || '').trim(),
+    situacao: (resposta.match(situacaoRegex)?.[1] || '').trim(),
   };
 
   if (!veiculo.placa || !veiculo.modelo) {

@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
-const ProgressoSchema = new mongoose.Schema({
-  numero: { type: String, unique: true },
-  etapaAtual: String,
-  dados: Object,
-});
+const RascunhoSchema = new mongoose.Schema({
+  numero: { type: String, required: true, unique: true, match: /^\d+$/ }, // Garante apenas números
+  etapaAtual: { type: String, required: true },
+  dados: { type: Object, required: true },
+}, { timestamps: true });
 
-export const Progresso = mongoose.model('Progresso', ProgressoSchema);
+export const Rascunho = mongoose.model('Rascunho', RascunhoSchema);

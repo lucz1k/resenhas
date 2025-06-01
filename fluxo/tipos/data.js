@@ -3,44 +3,57 @@ import { DateTime } from 'luxon';
 export async function executarData(resposta, dados) {
   let dataLimpa = resposta.trim().toLowerCase();
 
-  let dataFinal;
+  // Remove acentos para facilitar o parsing de palavras como "amanhã"
+  dataLimpa = dataLimpa.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
   const hoje = DateTime.now().setZone('America/Sao_Paulo');
+  let dataFinal;
 
-  if (dataLimpa === 'hoje') {
-    dataFinal = hoje;
-  } else if (dataLimpa === 'ontem') {
-    dataFinal = hoje.minus({ days: 1 });
-  } else {
-    // Tenta formatos comuns
-    const formatos = [
-      'dd/MM/yyyy',
-      'dd/MM/yy',
-      'dd/MM',
-      'd MMMM', // 25 maio
-      'd MMM',  // 25 mai
-      'ddLLLyy', // 25mai25
-    ];
+  switch (dataLimpa) {
+    case 'hoje':
+      dataFinal = hoje;
+      break;
+    case 'ontem':
+      dataFinal = hoje.minus({ days: 1 });
+      break;
+    case 'amanha':
+      dataFinal = hoje.plus({ days: 1 });
+      break;
+    default: {
+      // Tenta formatos conhecidos
+      const formatos = [
+        'dd/MM/yyyy',
+        'dd/MM/yy',
+        'dd/MM',
+        'd MMMM',
+        'd MMM',
+        'ddLLLyy',
+      ];
 
-    let encontrada = false;
-    for (const formato of formatos) {
-      const tentativa = DateTime.fromFormat(dataLimpa, formato, { locale: 'pt-BR' });
-      if (tentativa.isValid) {
-        dataFinal = tentativa;
-        encontrada = true;
-        break;
+      for (const formato of formatos) {
+        const tentativa = DateTime.fromFormat(dataLimpa, formato, { locale: 'pt-BR' });
+        if (tentativa.isValid) {
+          // Se for apenas dia/mês, assume o ano atual
+          if (formato === 'dd/MM' || formato === 'd MMMM' || formato === 'd MMM') {
+            dataFinal = tentativa.set({ year: hoje.year });
+          } else {
+            dataFinal = tentativa;
+          }
+          break;
+        }
       }
-    }
 
-    if (!encontrada) {
-      return {
-        proximaEtapa: 'hora',
-        mensagemResposta: '❌ Não entendi a data. Tente algo como: 25/05, 25mai25, ou "hoje".',
-        dadoExtraido: null,
-      };
+      if (!dataFinal) {
+        return {
+          proximaEtapa: 'hora',
+          mensagemResposta: '❌ Não entendi a data. Tente algo como: 25/05, 25mai25, ou "hoje".',
+          dadoExtraido: null,
+        };
+      }
     }
   }
 
-  const dataFormatada = dataFinal.toFormat("ddLLLyy").toUpperCase(); // Ex: 25MAI25
+  const dataFormatada = dataFinal.toFormat('ddLLLyy').toUpperCase(); // Ex: 25MAI25
 
   return {
     proximaEtapa: 'hora',

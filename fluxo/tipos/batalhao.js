@@ -1,13 +1,14 @@
 export async function executarBatalhao(resposta) {
   let texto = resposta.trim().toUpperCase();
 
-  // Corrigir pequenos erros de digitação comuns
-  texto = texto.replace(/\s+/g, ''); // Remove espaços
+  // Remove espaços extras e corrige abreviações comuns
+  texto = texto.replace(/\s+/g, '');
   texto = texto.replace(/BPMM$/, 'BPM/M').replace(/BPMI$/, 'BPM/I');
 
-  // Corrigir casos sem o º
+  // Adiciona o "º" caso esteja ausente (ex: "10BPM/M" → "10º BPM/M")
   texto = texto.replace(/^(\d+)(BPM\/[MI])$/, (_, numero, tipo) => `${numero}º ${tipo}`);
 
+  // Padrões válidos aceitos (batalhões convencionais e unidades especializadas)
   const padraoValido = /^(\d{1,2}º\sBPM\/[MI]|ROTA|BPTRAN|BAEP|[1-9]º\sBPCHQ|[1-9]º\sBPR|[1-9]º\sBPAMB|[1-9]º\sBPRV)$/;
 
   if (!padraoValido.test(texto)) {
@@ -20,7 +21,7 @@ export async function executarBatalhao(resposta) {
 
   return {
     proximaEtapa: 'cia',
-    mensagemResposta: `Batalhão registrado: *${texto}*`,
-    dadoExtraido: `*${texto}*`,
+    mensagemResposta: `✅ Batalhão registrado: *${texto}*. Agora informe a Companhia (ex: 1ª Cia).`,
+    dadoExtraido: texto,
   };
 }

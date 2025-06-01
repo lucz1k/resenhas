@@ -1,5 +1,3 @@
-// fluxo/tipos/envolvidos.js
-
 export async function executarEnvolvidos(resposta, dados) {
   if (!dados.envolvidos) {
     dados.envolvidos = { vitimas: [], autores: [], testemunhas: [] };
@@ -7,9 +5,9 @@ export async function executarEnvolvidos(resposta, dados) {
   }
 
   const etapa = dados._etapaInternaEnvolvidos;
+  const texto = resposta.trim();
 
-  if (/^(não|nao|nenhum|fim|encerrar)$/i.test(resposta.trim())) {
-    // Avança para o próximo grupo ou etapa
+  if (/^(não|nao|nenhum|fim|encerrar)$/i.test(texto)) {
     if (etapa === 'vitimas') {
       dados._etapaInternaEnvolvidos = 'autores';
       return {
@@ -34,32 +32,33 @@ export async function executarEnvolvidos(resposta, dados) {
     }
   }
 
-  // Formatação especial para PMs da ativa ou reserva
-  let entrada = resposta.trim();
+  let entradaFormatada = texto;
 
-  // Detecta PM da reserva
-  const pmReservaRegex = /(?:|Sd|Cb|3º Sgt|2º Sgt|1º Sgt|Subten| Al Of| Asp Of|2º Ten|1º Ten|Cap|Maj|Ten Cel|Cel)\s*PM\s+([\w\s]+),\s*da reserva\s*,?\s*(última unidade\s+[\wº\s/]+)?/i;
-  if (pmReservaRegex.test(entrada)) {
-    entrada = entrada.replace(pmReservaRegex, (_, nome, unidade) =>
-      `${_getPosto(_)} PM ${nome.trim()}, da reserva${unidade ? `, ${unidade.trim()}` : ''}`
-    );
-  }
+  // PM da reserva
+  const pmReservaRegex = /((?:Sd|Cb|3º Sgt|2º Sgt|1º Sgt|Subten|Al Of|Asp Of|2º Ten|1º Ten|Cap|Maj|Ten Cel|Cel)?\s*PM)\s+([\w\s]+?),\s*da reserva\s*,?\s*(última unidade\s+[\wº\s/]+)?/i;
+  entradaFormatada = entradaFormatada.replace(pmReservaRegex, (_, posto, nome, unidade) => {
+    const postoFinal = posto?.trim() || _getPosto(texto);
+    return `${postoFinal} ${nome.trim()}, da reserva${unidade ? `, ${unidade.trim()}` : ''}`;
+  });
 
-  // Detecta PM da ativa com RE
-  const pmAtivaRegex = /(?:|Sd|Cb|3º Sgt|2º Sgt|1º Sgt|Subten| Al Of| Asp Of|2º Ten|1º Ten|Cap|Maj|Ten Cel|Cel)\s*PM\s+([\w\s]+),\s*RE\s*(\d{4,})/i;
-  if (pmAtivaRegex.test(entrada)) {
-    entrada = entrada.replace(pmAtivaRegex, (_, nome, re) =>
-      `${_getPosto(_)} PM ${nome.trim()} – ${re}`
-    );
-  }
+  // PM da ativa com RE
+  const pmAtivaRegex = /((?:Sd|Cb|3º Sgt|2º Sgt|1º Sgt|Subten|Al Of|Asp Of|2º Ten|1º Ten|Cap|Maj|Ten Cel|Cel)?\s*PM)\s+([\w\s]+?),\s*RE\s*(\d{4,})/i;
+  entradaFormatada = entradaFormatada.replace(pmAtivaRegex, (_, posto, nome, re) => {
+    const postoFinal = posto?.trim() || _getPosto(texto);
+    return `${postoFinal} ${nome.trim()} – ${re}`;
+  });
 
-  // Armazena no tipo correto
-  if (etapa === 'vitimas') {
-    dados.envolvidos.vitimas.push(entrada);
-  } else if (etapa === 'autores') {
-    dados.envolvidos.autores.push(entrada);
-  } else {
-    dados.envolvidos.testemunhas.push(entrada);
+  // Armazena no grupo correto
+  switch (etapa) {
+    case 'vitimas':
+      dados.envolvidos.vitimas.push(entradaFormatada);
+      break;
+    case 'autores':
+      dados.envolvidos.autores.push(entradaFormatada);
+      break;
+    case 'testemunhas':
+      dados.envolvidos.testemunhas.push(entradaFormatada);
+      break;
   }
 
   return {
@@ -70,9 +69,10 @@ export async function executarEnvolvidos(resposta, dados) {
 }
 
 function _getPosto(texto) {
-  const postos = ['Sd', 'Cb', '3º Sgt', '2º Sgt', '1º Sgt', 'Subten', 'Al Of', 'Asp Of','2º Ten', '1º Ten', 'Cap', 'Maj', 'Ten Cel', 'Cel'];
-  for (const p of postos) {
-    if (texto.includes(p)) return p;
+  const postos = ['Sd', 'Cb', '3º Sgt', '2º Sgt', '1º Sgt', 'Subten', 'Al Of', 'Asp Of', '2º Ten', '1º Ten', 'Cap', 'Maj', 'Ten Cel', 'Cel'];
+  const textoLimpo = texto.toUpperCase();
+  for (const posto of postos) {
+    if (textoLimpo.includes(posto.toUpperCase())) return posto;
   }
   return 'PM';
 }

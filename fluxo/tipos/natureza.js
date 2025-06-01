@@ -5,7 +5,7 @@ import { naturezasCompletas } from '../dados/naturezasCompletas.js';
 export async function executarNatureza(resposta, dados) {
   const codigo = resposta.trim().toUpperCase();
 
-  const descricao = naturezas[codigo];
+  const descricao = naturezasCompletas[codigo];
   if (!descricao) {
     return {
       proximaEtapa: 'natureza',

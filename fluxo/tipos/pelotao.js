@@ -1,7 +1,7 @@
 export async function executarPelotao(resposta) {
   const entrada = resposta.trim().toLowerCase();
+  const match = entrada.match(/^(\d{1,2})\s*(º|o|a)?\s*(pel|pelotao|pelotão)?/);
 
-  const match = entrada.match(/^(\d{1,2})/);
   if (!match) {
     return {
       proximaEtapa: 'natureza',

@@ -34,8 +34,25 @@ export function formatarTextoEquipe(viatura, nomes) {
   return [cabecalho, lista].filter(Boolean).join('\n');
 }
 
-export function formatarTextoApoio({ tipo, viatura, nomes }) {
-  const cabecalho = tipo && viatura ? `${tipo} – Viatura: ${viatura}` : tipo || viatura || '';
-  const lista = nomes && nomes.length > 0 ? nomes.map(p => `- ${formatarPosto(p)}`).join('\n') : '';
-  return [cabecalho, lista].filter(Boolean).join('\n');
+export function formatarTextoApoio({ viatura, autoridade, policiais }) {
+  const cabecalho = viatura ? `Viatura: ${viatura}` : '';
+  const chefe = autoridade ? `Autoridade: ${formatarPosto(autoridade)}` : '';
+  const lista = policiais && policiais.length > 0
+    ? policiais.map(p => `- ${formatarPosto(p)}`).join('\n')
+    : '';
+
+  return [cabecalho, chefe, lista].filter(Boolean).join('\n');
+}
+
+export function formatarTextoArmamentos(armamento) {
+  const partes = [];
+
+  if (armamento.tipo) partes.push(`Tipo: ${armamento.tipo}`);
+  if (armamento.calibre) partes.push(`Calibre: ${armamento.calibre}`);
+  if (armamento.numeracao) partes.push(`Numeração: ${armamento.numeracao}`);
+  if (armamento.disparos) partes.push(`Disparos: ${armamento.disparos}`);
+  if (armamento.capsulas) partes.push(`Cápsulas: ${armamento.capsulas}`);
+  if (armamento.municoes) partes.push(`Munições: ${armamento.municoes}`);
+
+  return partes.join('\n');
 }

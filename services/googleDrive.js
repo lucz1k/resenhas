@@ -15,17 +15,22 @@ export async function salvarNoDrive(conteudo, nomeArquivo = 'resenha.txt') {
   bufferStream.push(conteudo);
   bufferStream.push(null);
 
-  const response = await drive.files.create({
-    requestBody: {
-      name: nomeArquivo,
-      mimeType: 'text/plain',
-      parents: process.env.GOOGLE_FOLDER_ID ? [process.env.GOOGLE_FOLDER_ID] : [],
-    },
-    media: {
-      mimeType: 'text/plain',
-      body: bufferStream,
-    },
-  });
+  try {
+    const response = await drive.files.create({
+      requestBody: {
+        name: nomeArquivo,
+        mimeType: 'text/plain',
+        parents: process.env.GOOGLE_FOLDER_ID ? [process.env.GOOGLE_FOLDER_ID] : [],
+      },
+      media: {
+        mimeType: 'text/plain',
+        body: bufferStream,
+      },
+    });
 
-  return response.data.id;
+    return response.data.id;
+  } catch (err) {
+    console.error('Erro ao salvar no Google Drive:', err);
+    throw err;
+  }
 }

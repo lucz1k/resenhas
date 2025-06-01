@@ -13,7 +13,9 @@ export async function executarObjetos(resposta, dados) {
     };
   }
 
-  dados.objetos.push(texto);
+  if (texto.length > 0) {
+    dados.objetos.push(texto);
+  }
 
   return {
     proximaEtapa: 'objetos',

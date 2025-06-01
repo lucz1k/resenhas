@@ -1,4 +1,12 @@
 export async function executar(texto, dados, numero) {
+  if (!texto || !texto.trim()) {
+    return {
+      proximaEtapa: determinarProximaEtapa(dados),
+      mensagemResposta: '⚠️ Por favor, envie um texto válido.',
+      dadoExtraido: null,
+    };
+  }
+
   const resposta = `Entendido. Informado: *${texto.trim()}*`;
   const proximaEtapa = determinarProximaEtapa(dados);
 

@@ -1,4 +1,5 @@
 import { interpretarNaturezaPrefixo } from './proxy.js';
+import { formatarTextoArmamentos } from './formatadores.js';
 
 export async function montarResenhaFinal(dados) {
   const {
@@ -17,17 +18,40 @@ export async function montarResenhaFinal(dados) {
     equipe = '',
     apoios = '',
     envolvidos = {},
-    veiculos = '',
-    objetos = '',
-    armamentos = '',
+    veiculos = [],
+    objetos = [],
+    armamentos = [],
     formaAcionamento = '',
     historico = ''
   } = dados;
 
-  // Use a função para converter o código em texto
   const naturezaPorExtenso = interpretarNaturezaPrefixo(natureza);
 
-  const formatarEnvolvidos = (grupo) => (grupo && grupo.length > 0 ? grupo.map(p => `- ${p}`).join('\n') : '');
+  const formatarEnvolvidos = (grupo) =>
+    Array.isArray(grupo) && grupo.length > 0 ? grupo.map(p => `- ${p}`).join('\n') : '';
+
+  const veiculosTexto = Array.isArray(veiculos)
+    ? veiculos
+        .map(v => {
+          const placa = v.placa ? v.placa : '';
+          const modelo = v.modelo ? v.modelo : '';
+          return (placa || modelo) ? `- ${placa} ${modelo}`.trim() : '';
+        })
+        .filter(Boolean)
+        .join('\n')
+    : veiculos;
+
+  const objetosTexto = Array.isArray(objetos)
+    ? objetos.filter(Boolean).map(o => `- ${o}`).join('\n')
+    : objetos;
+
+  const armamentosTexto = Array.isArray(armamentos)
+    ? armamentos.filter(Boolean).map(formatarTextoArmamentos).join('\n\n')
+    : armamentos;
+
+  const historicoCompleto = formaAcionamento
+    ? `Equipe ${formaAcionamento.toLowerCase()}. ${historico}`.trim()
+    : historico;
 
   const resenha = [
     `*SECRETARIA DA SEGURANÇA PÚBLICA*`,
@@ -58,11 +82,11 @@ export async function montarResenhaFinal(dados) {
     '',
     `*TESTEMUNHAS*\n${formatarEnvolvidos(envolvidos.testemunhas)}`,
     '',
-    veiculos ? `*VEÍCULOS*\n${veiculos}\n` : '',
-    objetos ? `*OBJETOS*\n${objetos}\n` : '',
-    armamentos ? `*ARMAMENTOS*\n${armamentos}\n` : '',
+    veiculosTexto ? `*VEÍCULOS*\n${veiculosTexto}` : '',
+    objetosTexto ? `*OBJETOS*\n${objetosTexto}` : '',
+    armamentosTexto ? `*ARMAMENTOS*\n${armamentosTexto}` : '',
     '',
-    `*HISTÓRICO*\n${historico}`,
+    `*HISTÓRICO*\n${historicoCompleto}`,
     '',
     '*VAMOS TODOS JUNTOS, NINGUÉM FICA PARA TRÁS*'
   ]
