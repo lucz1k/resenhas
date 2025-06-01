@@ -103,7 +103,7 @@ export const etapasFluxo = [
   {
     chave: 'formaAcionamento',
     pergunta: 'Como a equipe foi acionada para a ocorrência? (Despachada via COPOM, deparou-se na via, populares, ligação/mensagem)',
-    tipo: 'formaaAcionamento',
+    tipo: 'formaAcionamento',
   },
 
   // Bloco 8 - HISTÓRICO
