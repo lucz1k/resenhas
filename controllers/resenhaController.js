@@ -28,8 +28,7 @@ const resenhaController = {
     if (!proxySecurity(telefone, texto)) {
       return enviarMensagem(telefone, '❌ Mensagem inválida ou não suportada.');
     }
-
-    proxySecurity.registrarLog({ telefone, ip, prompt: texto });
+    console.log(`[RECEBIDO] Mensagem de ${telefone} (${ip}): ${texto}`);
 
     let progresso = await obterProgresso(telefone);
     if (!progresso) {
@@ -75,3 +74,8 @@ export async function processarMensagem(mensagem) {
 }
 
 export default resenhaController;
+
+function registrarLog({ telefone, ip, prompt }) {
+  // Implementar a lógica de registro de log aqui
+  console.log(`Log registrado: ${telefone}, ${ip}, ${prompt}`);
+}

@@ -97,3 +97,7 @@ export function montarResenhaFinal(dados) {
   // Lógica futura de formatação completa
   return `*Resumo da Ocorrência*\n\n${JSON.stringify(dados, null, 2)}`;
 }
+
+export function registrarLog({ telefone, ip, prompt }) {
+  console.log(`[LOG] Telefone: ${telefone} | IP: ${ip} | Mensagem: ${prompt}`);
+}
