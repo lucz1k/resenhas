@@ -11,17 +11,20 @@ const resenhaController = {
     const texto = (mensagem.body || '').trim();
     const ip = mensagem?.sender?.ip || 'desconhecido';
 
+    // Ignora mensagens da própria instância
     if (mensagem?.fromMe === true) {
       console.log(`[IGNORADO] Mensagem enviada por mim mesmo: ${texto}`);
       return;
     }
 
+    // Comando de reset
     if (texto.toLowerCase() === '#reset') {
       await resetarProgresso(telefone);
       await enviarMensagem(telefone, '🔄 Progresso da resenha resetado com sucesso. Vamos começar novamente.');
       return;
     }
 
+    // Verifica limites e segurança
     if (limitesAbuso(telefone)) {
       return enviarMensagem(telefone, '🚫 Limite de uso excedido. Tente novamente mais tarde.');
     }
@@ -29,8 +32,22 @@ const resenhaController = {
     if (!proxySecurity(telefone, texto)) {
       return enviarMensagem(telefone, '❌ Mensagem inválida ou não suportada.');
     }
+
+    // ✅ NOVO: detectar saudação e iniciar fluxo
+    const saudacoes = ['oi', 'teste', 'resenha','.', 'Oi', 'eae','eai', 'olá', 'ola', 'bom dia', 'boa tarde', 'boa noite', 'começar', 'iniciar'];
+    if (saudacoes.includes(texto.toLowerCase())) {
+      await resetarProgresso(telefone);
+      await salvarProgresso(telefone, {
+        etapaAtual: 'grandeComando',
+        dados: {},
+      });
+      await enviarMensagem(telefone, '👮‍♂️ Bem-vindo! Vamos começar a montar a resenha. Informe o *GRANDE COMANDO* (ex: CPA-M/10, CPI-1).');
+      return;
+    }
+
     console.log(`[RECEBIDO] Mensagem de ${telefone} (${ip}): ${texto}`);
 
+    // Carrega progresso atual do usuário
     let progresso = await obterProgresso(telefone);
     if (!progresso) {
       progresso = { etapaAtual: 'grandeComando', dados: {} };

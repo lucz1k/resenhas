@@ -25,8 +25,8 @@ export default router;
  */
 export async function enviarMensagem(telefone, mensagem) {
   try {
-    if (!telefone || !mensagem) {
-      throw new Error('Telefone e mensagem são obrigatórios.');
+    if (!telefone || typeof mensagem !== 'string' || mensagem.trim() === '') {
+      throw new Error('Telefone e mensagem (string não vazia) são obrigatórios.');
     }
 
     const body = {
