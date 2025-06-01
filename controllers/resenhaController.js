@@ -4,6 +4,7 @@ import { etapasFluxo } from '../fluxo/etapasFluxo.js';
 import { chatCompletions } from '../services/openai.js';
 import { enviarMensagem } from '../services/zapi.js';
 import { obterProgresso, salvarProgresso, limparProgresso as resetarProgresso } from '../db/progresso.js';
+import { executores } from '../fluxo/executores.js'; // <-- Adicione esta linha
 
 const resenhaController = {
   async receberMensagem(mensagem) {
@@ -58,13 +59,18 @@ const resenhaController = {
 
     const etapa = etapasFluxo.find(et => et.chave === progresso.etapaAtual);
 
-    if (!etapa || typeof etapa.executar !== 'function') {
-      console.error(`[ERRO] Etapa inválida ou sem executor: ${progresso.etapaAtual}`);
-      return enviarMensagem(telefone, `❌ Etapa de fluxo inválida ou sem executor configurado: ${progresso.etapaAtual}`);
+    if (!etapa) {
+      return enviarMensagem(telefone, `❌ Etapa de fluxo inválida: ${progresso.etapaAtual}`);
+    }
+
+    const executor = executores[etapa.tipo];
+
+    if (!executor || typeof executor !== 'function') {
+      return enviarMensagem(telefone, `❌ Executor não encontrado para o tipo: ${etapa.tipo}`);
     }
 
     try {
-      const { proximaEtapa, mensagemResposta, dadoExtraido } = await etapa.executar(texto, progresso.dados, telefone);
+      const { proximaEtapa, mensagemResposta, dadoExtraido } = await executor(texto, progresso.dados, telefone);
 
       progresso.dados[progresso.etapaAtual] = dadoExtraido;
       progresso.etapaAtual = proximaEtapa;
