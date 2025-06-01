@@ -7,6 +7,7 @@ export async function executarGrandeComando(resposta, dados) {
   // Ajusta para formatos válidos com separadores
   texto = texto.replace(/^CPAM(\d+)$/, 'CPA-M/$1');
   texto = texto.replace(/^CPI(\d+)$/, 'CPI-$1');
+  texto = texto.replace(/\s*\/\s*/, '/');
 
   const formatosValidos = [
     /^CPA-M\/\d+$/,  // Ex: CPA-M/10

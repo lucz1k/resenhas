@@ -1,15 +1,15 @@
 export async function executarBatalhao(resposta) {
   let texto = resposta.trim().toUpperCase();
 
-  // Remove espaços extras e corrige abreviações comuns
-  texto = texto.replace(/\s+/g, '');
+  // Substitui múltiplos espaços por um só
+  texto = texto.replace(/\s+/g, ' ');
   texto = texto.replace(/BPMM$/, 'BPM/M').replace(/BPMI$/, 'BPM/I');
 
-  // Adiciona o "º" caso esteja ausente (ex: "10BPM/M" → "10º BPM/M")
-  texto = texto.replace(/^(\d+)(BPM\/[MI])$/, (_, numero, tipo) => `${numero}º ${tipo}`);
+  // Adiciona o "º" caso esteja ausente (ex: "10 BPM/M" ou "10BPM/M" → "10º BPM/M")
+  texto = texto.replace(/^(\d+)\s?BPM\/([MI])$/, (_, numero, tipo) => `${numero}º BPM/${tipo}`);
 
   // Padrões válidos aceitos (batalhões convencionais e unidades especializadas)
-  const padraoValido = /^(\d{1,2}º\sBPM\/[MI]|ROTA|BPTRAN|BAEP|[1-9]º\sBPCHQ|[1-9]º\sBPR|[1-9]º\sBPAMB|[1-9]º\sBPRV)$/;
+  const padraoValido = /^(\d{1,2}º BPM\/[MI]|ROTA|BPTRAN|BAEP|[1-9]º BPCHQ|[1-9]º BPR|[1-9]º BPAMB|[1-9]º BPRV)$/;
 
   if (!padraoValido.test(texto)) {
     return {
