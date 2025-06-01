@@ -1,4 +1,4 @@
-export const naturezas = {
+export const naturezasCompletas = {
   "A01": "HOMICÍDIO CULPOSO",
   "A02": "HOMICÍDIO DOLOSO",
   "A03": "HOMICÍDIO TENTATIVA",
