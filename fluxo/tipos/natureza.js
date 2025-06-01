@@ -1,6 +1,6 @@
 // fluxo/tipos/natureza.js
 
-import { naturezas } from '../dados/naturezasCompletas.js';
+import { naturezasCompletas } from '../dados/naturezasCompletas.js';
 
 export async function executarNatureza(resposta, dados) {
   const codigo = resposta.trim().toUpperCase();
