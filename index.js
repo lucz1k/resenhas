@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 // ✅ Rota do Webhook (ex: Z-API) separada
-app.use('/api/webhook', webhookRouter);
+app.use('/webhook', webhookRouter);
 
 // ✅ Rota da API de resenhas
 app.use('/api/resenha', resenhaRoutes);
