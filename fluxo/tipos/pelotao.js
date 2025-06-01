@@ -5,16 +5,16 @@ export async function executarPelotao(resposta) {
   if (!match) {
     return {
       proximaEtapa: 'natureza',
-      mensagemResposta: '❌ Formato inválido para Pelotão. Exemplos válidos: 1º Pel, 2 Pelotão.',
+      mensagemResposta: '❌ Formato inválido para Pelotão. Exemplos válidos: *1º Pel*, *2 Pelotão*.',
       dadoExtraido: null,
     };
   }
 
-  const numero = parseInt(match[1]);
+  const numero = parseInt(match[1], 10);
   if (numero < 1 || numero > 99) {
     return {
       proximaEtapa: 'natureza',
-      mensagemResposta: '❌ Número de Pelotão inválido. Use um número entre 1 e 99.',
+      mensagemResposta: '❌ Número de Pelotão inválido. Utilize um número entre *1* e *99*.',
       dadoExtraido: null,
     };
   }
@@ -23,7 +23,7 @@ export async function executarPelotao(resposta) {
 
   return {
     proximaEtapa: 'natureza',
-    mensagemResposta: `Pelotão registrado: ${pelotaoFormatado}`,
+    mensagemResposta: `✅ Pelotão registrado: ${pelotaoFormatado}`,
     dadoExtraido: pelotaoFormatado,
   };
 }

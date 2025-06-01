@@ -29,9 +29,10 @@ ${historicoBruto}
       { role: 'user', content: prompt }
     ]);
 
-    historicoFinal = typeof respostaGPT === 'string'
+    historicoFinal = (typeof respostaGPT === 'string'
       ? respostaGPT
-      : respostaGPT?.choices?.[0]?.message?.content || '[ERRO NA GERAÇÃO DO HISTÓRICO]';
+      : respostaGPT?.choices?.[0]?.message?.content || '[ERRO NA GERAÇÃO DO HISTÓRICO]'
+    ).trim();
 
   } catch (error) {
     console.error('[ERRO OPENAI]', error);

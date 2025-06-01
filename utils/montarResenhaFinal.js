@@ -25,7 +25,11 @@ export async function montarResenhaFinal(dados) {
     historico = ''
   } = dados;
 
-  const naturezaPorExtenso = interpretarNaturezaPrefixo(natureza);
+  const naturezaCodigo = typeof natureza === 'string' ? natureza : natureza?.codigo || '';
+  const naturezaDescricao = typeof natureza === 'object' ? natureza?.descricao : '';
+  const naturezaPorExtenso = naturezaCodigo && naturezaDescricao
+    ? `${naturezaCodigo} – ${naturezaDescricao}`
+    : interpretarNaturezaPrefixo(natureza);
 
   const formatarEnvolvidos = (grupo) =>
     Array.isArray(grupo) && grupo.length > 0 ? grupo.map(p => `- ${p}`).join('\n') : '';
@@ -33,8 +37,8 @@ export async function montarResenhaFinal(dados) {
   const veiculosTexto = Array.isArray(veiculos)
     ? veiculos
         .map(v => {
-          const placa = v.placa ? v.placa : '';
-          const modelo = v.modelo ? v.modelo : '';
+          const placa = v.placa || '';
+          const modelo = v.modelo || '';
           return (placa || modelo) ? `- ${placa} ${modelo}`.trim() : '';
         })
         .filter(Boolean)
@@ -46,13 +50,14 @@ export async function montarResenhaFinal(dados) {
     : objetos;
 
   const armamentosTexto = Array.isArray(armamentos)
-    ? armamentos.filter(Boolean).map(formatarTextoArmamentos).join('\n\n')
+    ? armamentos.filter(Boolean).map(formatarTextoArmamentos).join('\n')
     : armamentos;
 
   const historicoCompleto = formaAcionamento
-    ? `Equipe ${formaAcionamento.toLowerCase()}. ${historico}`.trim()
+    ? `Equipe ${formaAcionamento.toLowerCase()}. \n\n${historico}`.trim()
     : historico;
 
+  // Montagem fiel ao modelo solicitado
   const resenha = [
     `*SECRETARIA DA SEGURANÇA PÚBLICA*`,
     `*POLÍCIA MILITAR DO ESTADO DE SÃO PAULO*`,
@@ -63,35 +68,46 @@ export async function montarResenhaFinal(dados) {
     '',
     `*DATA*: ${data}`,
     `*HORA*: ${hora}`,
+    `*ENDEREÇO*`,
+    endereco && `${endereco}`,
     '',
     `*NATUREZA*: ${naturezaPorExtenso}`,
-    `*COMPLEMENTO*: ${complementoNatureza}`,
-    `*BOPM*: ${bopm}`,
-    `*BOPC*: ${bopc} ${delegado ? '– ' + delegado : ''}`,
+    complementoNatureza && `*COMPLEMENTO*: ${complementoNatureza}`,
+    bopm && `*BOPM*: ${bopm}`,
+    bopc && `*BOPC*: ${bopc}`,
+    delegado && `*DELEGADO*: ${delegado}`,
     '',
-    `*ENDEREÇO*\n${endereco}`,
     '',
-    `*EQUIPE*\n${equipe}`,
+    `*EQUIPE*`,
+    equipe && `${equipe}`,
     '',
-    apoios ? `*APOIOS*\n${apoios}` : '',
+    `*APOIOS*`,
+    apoios && `${apoios}`,
     '',
     `*ENVOLVIDOS*`,
-    `*VÍTIMAS*\n${formatarEnvolvidos(envolvidos.vitimas)}`,
+    `*VÍTIMAS*`,
+    formatarEnvolvidos(envolvidos.vitimas),
+    `*AUTORES*`,
+    formatarEnvolvidos(envolvidos.autores),
+    `*TESTEMUNHAS*`,
+    formatarEnvolvidos(envolvidos.testemunhas),
     '',
-    `*AUTORES*\n${formatarEnvolvidos(envolvidos.autores)}`,
+    veiculosTexto && `*VEÍCULOS*\n${veiculosTexto}`,
+    objetosTexto && `*OBJETOS*\n${objetosTexto}`,
+    armamentosTexto && `*ARMAMENTOS*\n${armamentosTexto}`,
     '',
-    `*TESTEMUNHAS*\n${formatarEnvolvidos(envolvidos.testemunhas)}`,
-    '',
-    veiculosTexto ? `*VEÍCULOS*\n${veiculosTexto}` : '',
-    objetosTexto ? `*OBJETOS*\n${objetosTexto}` : '',
-    armamentosTexto ? `*ARMAMENTOS*\n${armamentosTexto}` : '',
-    '',
-    `*HISTÓRICO*\n${historicoCompleto}`,
+    `*HISTÓRICO*`,
+    historicoCompleto,
     '',
     '*VAMOS TODOS JUNTOS, NINGUÉM FICA PARA TRÁS*'
   ]
-    .filter(Boolean)
-    .join('\n\n');
+    .filter((linha, idx, arr) => {
+      // Remove linhas falsas/vazias e mantém apenas uma linha em branco seguida
+      if (!linha) return false;
+      if (linha === '' && arr[idx - 1] === '') return false;
+      return true;
+    })
+    .join('\n');
 
   return resenha;
 }

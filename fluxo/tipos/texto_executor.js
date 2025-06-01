@@ -1,5 +1,7 @@
 export async function executar(texto, dados, numero) {
-  if (!texto || !texto.trim()) {
+  const entrada = texto?.trim();
+
+  if (!entrada) {
     return {
       proximaEtapa: determinarProximaEtapa(dados),
       mensagemResposta: '⚠️ Por favor, envie um texto válido.',
@@ -7,26 +9,30 @@ export async function executar(texto, dados, numero) {
     };
   }
 
-  const resposta = `Entendido. Informado: *${texto.trim()}*`;
+  const resposta = `Entendido. Informado: *${entrada}*`;
   const proximaEtapa = determinarProximaEtapa(dados);
 
   return {
     proximaEtapa,
     mensagemResposta: resposta,
-    dadoExtraido: texto.trim(),
+    dadoExtraido: entrada,
   };
 }
 
 function determinarProximaEtapa(dados) {
-  const chaves = Object.keys(dados);
   const etapas = [
     'grandeComando', 'batalhao', 'cia', 'pelotao', 'natureza', 'complementoNatureza',
     'data', 'hora', 'endereco', 'equipe', 'apoios', 'envolvidos', 'veiculos',
-    'objetos', 'armamentos', 'formaAcionamento', 'historico'
+    'objetos', 'armamentos', 'formaAcionamento', 'historico',
+    'bopm', 'bopc', 'delegado'
   ];
+
   for (const etapa of etapas) {
-    if (!chaves.includes(etapa)) return etapa;
+    if (!Object.prototype.hasOwnProperty.call(dados, etapa)) {
+      return etapa;
+    }
   }
+
   return 'FINALIZAR';
 }
 

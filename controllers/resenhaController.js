@@ -1,4 +1,5 @@
-import { proxySecurity, limitesAbuso, interpretarNaturezaPrefixo, montarResenhaFinal, finalizarResenha } from '../utils/proxy.js';
+import { proxySecurity, limitesAbuso, interpretarNaturezaPrefixo, finalizarResenha } from '../utils/proxy.js';
+import { montarResenhaFinal } from '../utils/montarResenhaFinal.js';
 import { etapasFluxo } from '../fluxo/etapasFluxo.js';
 import { chatCompletions } from '../services/openai.js';
 import { enviarMensagem } from '../services/zapi.js';

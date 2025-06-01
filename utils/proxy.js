@@ -78,7 +78,6 @@ export function limitesAbuso(telefone) {
 
 /**
  * Interpreta o prefixo de natureza (ex: "ROUBO" ou "FURTO").
- * (Placeholder)
  */
 export function interpretarNaturezaPrefixo(codigoNatureza) {
   if (typeof codigoNatureza === 'string' || typeof codigoNatureza === 'number') {
@@ -88,27 +87,6 @@ export function interpretarNaturezaPrefixo(codigoNatureza) {
     }
   }
   return 'OUTROS';
-}
-
-/**
- * Monta a resenha final com base nos dados da ocorrência.
- * (Placeholder)
- */
-export function montarResenhaFinal(dados) {
-  const textoArmamentos = Array.isArray(dados.armamentos)
-    ? dados.armamentos.map(formatarTextoArmamentos).join('\n\n')
-    : '';
-
-  const blocoArmamentos = textoArmamentos
-    ? `🔫 *ARMAMENTOS ENVOLVIDOS*\n${textoArmamentos}`
-    : '';
-
-  // Adicione outros blocos conforme necessário
-  return [
-    `*Resumo da Ocorrência*`,
-    blocoArmamentos,
-    // ...outros blocos...
-  ].filter(Boolean).join('\n\n');
 }
 
 export function registrarLog({ telefone, ip, prompt }) {

@@ -1,3 +1,4 @@
+// fluxo/tipos/hora.js
 import { DateTime } from 'luxon';
 
 export async function executarHora(resposta, dados) {
@@ -7,19 +8,31 @@ export async function executarHora(resposta, dados) {
   let horaFinal;
 
   if (texto === 'agora') {
-    horaFinal = agora.toFormat('HH\'h\'mm');
+    horaFinal = agora.toFormat("HH'h'mm");
   } else {
-    // Tenta extrair hora de formatos variados
+    // Aceita formatos como "1530", "15:30", "15h30"
     const regexHora = /^(\d{1,2})[:hH]?(\d{2})$/;
     const match = texto.match(regexHora);
 
     if (match) {
       const hora = match[1].padStart(2, '0');
       const minuto = match[2].padStart(2, '0');
+
+      const horaNum = parseInt(hora);
+      const minutoNum = parseInt(minuto);
+
+      if (horaNum > 23 || minutoNum > 59) {
+        return {
+          proximaEtapa: 'hora',
+          mensagemResposta: '❌ Horário inválido. Certifique-se de que esteja entre 00:00 e 23:59.',
+          dadoExtraido: null,
+        };
+      }
+
       horaFinal = `${hora}h${minuto}`;
     } else {
       return {
-        proximaEtapa: 'endereco',
+        proximaEtapa: 'hora',
         mensagemResposta: '❌ Não entendi o horário. Tente algo como "agora", "15:30" ou "1530".',
         dadoExtraido: null,
       };

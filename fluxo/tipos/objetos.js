@@ -1,14 +1,16 @@
 // fluxo/tipos/objetos.js
 
 export async function executarObjetos(resposta, dados) {
-  if (!dados.objetos) dados.objetos = [];
+  if (!dados.objetos) {
+    dados.objetos = [];
+  }
 
   const texto = resposta.trim();
 
   if (/^(não|nao|nenhum|fim|encerrar)$/i.test(texto)) {
     return {
       proximaEtapa: 'armamentos',
-      mensagemResposta: 'Deseja adicionar armamentos envolvidos na ocorrência? (Tipo, numeração, calibre, disparos, cápsulas, munições)',
+      mensagemResposta: '📦 Deseja registrar armamentos envolvidos na ocorrência? (Tipo, numeração, calibre, disparos, cápsulas, munições)',
       dadoExtraido: dados.objetos,
     };
   }
@@ -19,7 +21,7 @@ export async function executarObjetos(resposta, dados) {
 
   return {
     proximaEtapa: 'objetos',
-    mensagemResposta: '✅ Objeto registrado. Deseja adicionar outro? Se não, digite "não".',
+    mensagemResposta: '✅ Objeto registrado.\nDeseja adicionar outro? Caso não, responda "não".',
     dadoExtraido: dados.objetos,
   };
 }

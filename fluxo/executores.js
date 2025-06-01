@@ -18,6 +18,9 @@ import { executarArmamentos } from './tipos/armamentos.js';
 import { executarHistorico } from './tipos/historico.js';
 import { executarFormaAcionamento } from './tipos/formaAcionamento.js';
 import { executarGrandeComando } from './tipos/grandeComando.js';
+import { executarBopm } from './tipos/bopm.js';
+import { executarBopc } from './tipos/bopc.js';
+import { executarDelegado } from './tipos/delegado.js';
 
 // Mapeia cada tipo de etapa ao seu executor correspondente
 export const executores = {
@@ -39,4 +42,7 @@ export const executores = {
   natureza: executarNatureza,
   formaAcionamento: executarFormaAcionamento,
   grandeComando: executarGrandeComando,
+  bopm: executarBopm,
+  bopc: executarBopc,
+  delegado: executarDelegado,
 };
