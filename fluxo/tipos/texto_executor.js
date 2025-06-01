@@ -9,7 +9,7 @@ export async function executar(texto, dados, numero) {
     };
   }
 
-  const resposta = `Entendido. Informado: *${entrada}*`;
+  const resposta = `Entendido. Informado: *${entrada}* digite proxima etapa.`;
   const proximaEtapa = determinarProximaEtapa(dados);
 
   return {

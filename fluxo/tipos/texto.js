@@ -21,7 +21,7 @@ export async function executarTexto(resposta, dados, chave) {
 
   return {
     proximaEtapa,
-    mensagemResposta: `Entendido. Informado: *${entrada}*`,
+    mensagemResposta: `Entendido. Informado: *${entrada}*, digite proxima etapa.`,
     dadoExtraido: entrada,
   };
 }
