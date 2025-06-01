@@ -25,8 +25,9 @@ export default router;
  */
 export async function enviarMensagem(telefone, mensagem) {
   try {
-    if (!telefone || typeof mensagem !== 'string' || mensagem.trim() === '') {
-      throw new Error('Telefone e mensagem (string não vazia) são obrigatórios.');
+    if (!telefone || !mensagem || typeof mensagem !== 'string' || mensagem.trim() === '') {
+      console.warn('❌ Telefone ou mensagem ausente/inválida:', { telefone, mensagem });
+      return;
     }
 
     const body = {
@@ -34,11 +35,17 @@ export async function enviarMensagem(telefone, mensagem) {
       message: mensagem,
     };
 
+    // Inclui client-token no header se existir
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(process.env.ZAPI_CLIENT_TOKEN && { 'client-token': process.env.ZAPI_CLIENT_TOKEN }),
+    };
+
     console.log('📨 Enviando para Z-API:', body);
 
     const response = await fetch(`${ZAPI_BASE_URL}/send-text`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(body),
     });
 
