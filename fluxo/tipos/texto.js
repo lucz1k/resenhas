@@ -18,10 +18,11 @@ export async function executarTexto(resposta, dados, chave) {
   // Descobre o índice da etapa atual no fluxo
   const idxAtual = etapasFluxo.findIndex(etapa => etapa.chave === chave);
   const proximaEtapa = etapasFluxo[idxAtual + 1]?.chave || 'FINALIZAR';
+  const proximaPergunta = etapasFluxo[idxAtual + 1]?.pergunta;
 
   return {
     proximaEtapa,
-    mensagemResposta: `Entendido. Informado: *${entrada}*, digite proxima etapa.`,
+    mensagemResposta: `Entendido. Informado: *${entrada}*.` + (proximaPergunta ? `\n\n${proximaPergunta}` : ''),
     dadoExtraido: entrada,
   };
 }
