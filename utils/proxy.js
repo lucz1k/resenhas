@@ -1,6 +1,6 @@
 // utils/proxy.js
 import { salvarNoDrive } from '../services/googleDrive.js';
-import { naturezasCompletas } from '..fluxo/dados/naturezasCompletas.js';
+import { naturezasCompletas } from '../fluxo/dados/naturezasCompletas.js';
 
 /**
  * Envia a resenha finalizada para o usuário e salva no Google Drive.
