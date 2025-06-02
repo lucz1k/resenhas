@@ -1,3 +1,5 @@
+import { etapasFluxo } from '../etapasFluxo.js';
+
 export async function executarPelotao(resposta) {
   const entrada = resposta.trim().toLowerCase();
   const match = entrada.match(/^(\d{1,2})\s*(º|o|a)?\s*(pel|pelotao|pelotão)?/);
@@ -19,11 +21,15 @@ export async function executarPelotao(resposta) {
     };
   }
 
-  const pelotaoFormatado = `*${numero}º Pel*`;
+  const pelotaoFormatado = `${numero}º Pel`;
+
+  // Busca a próxima pergunta
+  const idxAtual = etapasFluxo.findIndex(et => et.chave === 'pelotao');
+  const proximaPergunta = etapasFluxo[idxAtual + 1]?.pergunta;
 
   return {
     proximaEtapa: 'natureza',
-    mensagemResposta: `✅ Pelotão registrado: ${pelotaoFormatado}`,
+    mensagemResposta: `✅ Pelotão registrado: *${pelotaoFormatado}*.` + (proximaPergunta ? `\n\n${proximaPergunta}` : ''),
     dadoExtraido: pelotaoFormatado,
   };
 }

@@ -3,6 +3,11 @@ export async function executarBatalhao(resposta) {
 
   // Substitui múltiplos espaços por um só
   texto = texto.replace(/\s+/g, ' ');
+
+  // Aceita e converte formatos como "10M" ou "10I" para "10º BPM/M" ou "10º BPM/I"
+  texto = texto.replace(/^(\d{1,2})\s*([MI])$/, (_, numero, tipo) => `${numero}º BPM/${tipo}`);
+
+  // Corrige BPMM e BPMI para BPM/M e BPM/I
   texto = texto.replace(/BPMM$/, 'BPM/M').replace(/BPMI$/, 'BPM/I');
 
   // Adiciona o "º" caso esteja ausente (ex: "10 BPM/M" ou "10BPM/M" → "10º BPM/M")
@@ -14,7 +19,7 @@ export async function executarBatalhao(resposta) {
   if (!padraoValido.test(texto)) {
     return {
       proximaEtapa: 'batalhao',
-      mensagemResposta: '❌ Formato inválido para Batalhão. Exemplos válidos: 10º BPM/M, 2º BPM/I, ROTA, 3º BPChq, BAEP.',
+      mensagemResposta: '❌ Formato inválido para Batalhão. Exemplos válidos: 10M, 10I, ROTA, 3º BPChq, BAEP.',
       dadoExtraido: null,
     };
   }
