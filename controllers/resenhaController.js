@@ -84,6 +84,8 @@ const resenhaController = {
         const resenha = await montarResenhaFinal(progresso.dados);
         await finalizarResenha(telefone, resenha, enviarMensagem, () => {});
         console.log(`[FINALIZADO] Resenha enviada para ${telefone}`);
+        // Envia mensagem orientando sobre o #reset
+        await enviarMensagem(telefone, '🔄 Caso deseje iniciar uma nova resenha, envie #reset ou uma saudação como "oi".');
       }
     } catch (erro) {
       console.error(`[ERRO] Ao processar etapa ${etapa.chave}:`, erro);

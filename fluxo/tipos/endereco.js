@@ -9,14 +9,14 @@ export async function executarEndereco(resposta, dados, numero) {
 
     return {
       proximaEtapa: 'equipe',
-      mensagemResposta: `📍 Endereço registrado:\n*${enderecoFormatado}*\n\nAgora, informe a *equipe que atendeu* (viatura + policiais).`,
+      mensagemResposta: `📍 Endereço registrado:\n*${enderecoFormatado}*\n\nQual a equipe que atendeu? Informe a viatura e os nomes dos policiais. (M-10500 - 1 Sgt PM Silva, CB PM Souza)`,
       dadoExtraido: enderecoFormatado,
     };
   }
 
   return {
     proximaEtapa: 'endereco',
-    mensagemResposta: '⚠️ Endereço inválido. Por favor, envie o endereço completo no formato: *Rua X, nº Y, Bairro - Cidade/UF*.',
+    mensagemResposta: '⚠️ Endereço inválido. Por favor, envie o endereço completo no formato: *Rua X, nº Y, Bairro - Cidade*.',
     dadoExtraido: null,
   };
 }
