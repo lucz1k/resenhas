@@ -1,14 +1,14 @@
 export async function executarCia(resposta) {
   const entrada = resposta.trim().toLowerCase();
 
-  // Tenta extrair o número e a palavra "Cia" ou "companhia"
-  const match = entrada.match(/^(\d{1,2})(ª|a)?\s*(cia|companhia)?/i);
+  // Aceita: "1ª", "2ª", "1ª cia", "2ª companhia", "1 cia", "2 companhia"
+  const match = entrada.match(/^(\d{1,2})(ª|a)?(\s*(cia|companhia))?$/i);
 
   // Validação de formato
   if (!match) {
     return {
       proximaEtapa: 'cia',
-      mensagemResposta: '❌ Formato inválido para Companhia. Exemplos válidos: 1ª Cia, 2 Cia, 3ª Companhia.',
+      mensagemResposta: '❌ Formato inválido para Companhia. Exemplos válidos: 1ª, 2ª, 1ª Cia, 2 Cia, 3ª Companhia.',
       dadoExtraido: null,
     };
   }
@@ -28,7 +28,7 @@ export async function executarCia(resposta) {
 
   return {
     proximaEtapa: 'pelotao',
-    mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o Pelotão (Ex. 1, 2, 3).`,
+    mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o *Pelotão* (Ex. 1, 2, 3).`,
     dadoExtraido: ciaFormatada,
   };
 }

@@ -10,13 +10,13 @@ export async function executarHora(resposta, dados) {
   if (texto === 'agora') {
     horaFinal = agora.toFormat("HH'h'mm");
   } else {
-    // Aceita formatos como "1530", "15:30", "15h30"
-    const regexHora = /^(\d{1,2})[:hH]?(\d{2})$/;
+    // Aceita formatos como "1530", "15:30", "15h30", "15"
+    const regexHora = /^(\d{1,2})(?::|h|H)?(\d{2})?$/;
     const match = texto.match(regexHora);
 
     if (match) {
       const hora = match[1].padStart(2, '0');
-      const minuto = match[2].padStart(2, '0');
+      const minuto = match[2] ? match[2].padStart(2, '0') : '00';
 
       const horaNum = parseInt(hora);
       const minutoNum = parseInt(minuto);
@@ -33,7 +33,7 @@ export async function executarHora(resposta, dados) {
     } else {
       return {
         proximaEtapa: 'hora',
-        mensagemResposta: '❌ Não entendi o horário. Tente algo como "agora", "15:30" ou "1530".',
+        mensagemResposta: '❌ Não entendi o horário. Tente algo como "agora", "15:30", "1530" ou "15".',
         dadoExtraido: null,
       };
     }
@@ -41,7 +41,7 @@ export async function executarHora(resposta, dados) {
 
   return {
     proximaEtapa: 'endereco',
-    mensagemResposta: `⏰ Horário registrado: *${horaFinal}*.\nAgora, informe o endereço da ocorrência. (Rua X, nº Y, Bairro - Cidade)`,
+    mensagemResposta: `⏰ Horário registrado: *${horaFinal}*.\nAgora, informe o *endereço da ocorrência*. (Rua X, nº Y - Cidade)`,
     dadoExtraido: horaFinal,
   };
 }

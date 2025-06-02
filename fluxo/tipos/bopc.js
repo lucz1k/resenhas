@@ -6,7 +6,7 @@ export async function executarBopc(resposta, dados) {
     dados.bopc = '';
     return {
       proximaEtapa: 'delegado',
-      mensagemResposta: 'Nenhum BOPC informado. Agora informe o nome do delegado responsável (pode deixar em branco).',
+      mensagemResposta: 'Nenhum BOPC informado. Agora informe o nome do *delegado responsável* (ou não para pular).',
       dadoExtraido: '',
     };
   }
@@ -15,7 +15,7 @@ export async function executarBopc(resposta, dados) {
 
   return {
     proximaEtapa: 'delegado',
-    mensagemResposta: `✅ BOPC registrado: *${valor}*.\nAgora informe o nome do delegado responsável (opcional).`,
+    mensagemResposta: `✅ BOPC registrado: *${valor}*.\nAgora informe o nome do *delegado* responsável (ou não para pular).`,
     dadoExtraido: valor,
   };
 }

@@ -6,18 +6,9 @@ export async function executarHistorico(resposta, dados, numero) {
   const historicoBruto = resposta.trim();
 
   const prompt = `
-Você é um assistente especializado na redação de ocorrências da Polícia Militar do Estado de São Paulo.
+Reescreva o texto abaixo para relatório oficial da Polícia Militar do Estado de São Paulo, mantendo clareza, objetividade, impessoalidade e norma culta. Não use emojis ou linguagem coloquial. Corrija apenas a caixa alta conforme a norma gramatical. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
 
-Corrija e reestruture o texto abaixo para uso em relatórios oficiais, mantendo clareza, objetividade, impessoalidade e norma culta.
-
-🔒 Instruções:
-- Não utilize emojis.
-- Não utilize linguagem coloquial.
-- Mantenha o sentido original do texto.
-- Corrija a caixa alta apenas conforme norma gramatical (início de frase, nomes próprios, etc).
-- Caso haja palavras proibidas pelos termos de uso da plataforma, substitua-as por "-PALAVRA PROIBIDA-".
-
-Texto original:
+Texto:
 ${historicoBruto}
 `;
 
@@ -49,7 +40,7 @@ ${historicoBruto}
 
   return {
     proximaEtapa: 'FINALIZAR',
-    mensagemResposta: '✅ Todos os dados foram coletados. A resenha será gerada e enviada.',
+    mensagemResposta: '✅ Todos os dados foram coletados. A resenha será *gerada e enviada.*',
     dadoExtraido: historicoFinal,
   };
 }

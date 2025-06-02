@@ -1,14 +1,28 @@
-// fluxo/tipos/grandeComando.js
-
 export async function executarGrandeComando(resposta, dados) {
   // Normaliza a entrada: remove espaços extras, converte para maiúsculas
   let texto = resposta.trim().toUpperCase().replace(/\s+/g, ' ');
 
-  // Aceita formatos como "cpa m6", "cpa-m6", "cpa m 6", "cpi 1", "cpi-1", etc.
-  texto = texto.replace(/CPA[\s\-]*M[\s\-]*(\d+)/, 'CPA-M/$1');
-  texto = texto.replace(/CPI[\s\-]*(\d+)/, 'CPI-$1');
-  texto = texto.replace(/\s*\/\s*/, '/'); // Normaliza barra
-  texto = texto.replace(/\s+/g, ''); // Remove espaços restantes
+  // Aceita já formatado: CPA-M/6, CPA/M6, CPI/5, CPCHQ, CPC, CPM
+  if (/^CPA[\-\/]M[\-\/]?\d+$/.test(texto)) {
+    texto = texto.replace(/CPA[\-\/]?M[\-\/]?(\d+)/, 'CPA-M/$1');
+  } else if (/^CPI[\-\/]?\d+$/.test(texto)) {
+    texto = texto.replace(/CPI[\-\/]?(\d+)/, 'CPI-$1');
+  } else if (/^CPA\s*M\s*\d+$/.test(texto)) {
+    texto = texto.replace(/CPA\s*M\s*(\d+)/, 'CPA-M/$1');
+  } else if (/^CPI\s*\d+$/.test(texto)) {
+    texto = texto.replace(/CPI\s*(\d+)/, 'CPI-$1');
+  } else if (/^M\d+$/i.test(texto)) {
+    texto = texto.replace(/^M(\d+)$/i, 'CPA-M/$1');
+  } else if (/^I\d+$/i.test(texto)) {
+    texto = texto.replace(/^I(\d+)$/i, 'CPI-$1');
+  } else if (/^CPA\/M\d+$/i.test(texto)) {
+    texto = texto.replace(/^CPA\/M(\d+)$/i, 'CPA-M/$1');
+  } else if (/^CPI\/\d+$/i.test(texto)) {
+    texto = texto.replace(/^CPI\/(\d+)$/i, 'CPI-$1');
+  } else {
+    // Remove espaços e normaliza barra
+    texto = texto.replace(/\s*\/\s*/, '/').replace(/\s+/g, '');
+  }
 
   // Aceita CPChq, CPC, CPM também
   const formatosValidos = [
@@ -24,7 +38,15 @@ export async function executarGrandeComando(resposta, dados) {
   if (!valido) {
     return {
       proximaEtapa: 'grandeComando',
-      mensagemResposta: '❌ Formato inválido. Exemplos válidos:\n\n• CPA M6\n• CPA-M6\n• CPI 1\n• CPI-1\n• CPChq\n• CPC\n• CPM',
+      mensagemResposta:
+        '❌ Formato inválido para Grande Comando.\n\n' +
+        'Exemplos aceitos:\n' +
+        '• CPA-M/6, CPA/M6, CPA M6, CPA-M6, M6 (todos viram CPA-M/6)\n' +
+        '• CPI-5, CPI/5, CPI 5, CPI-5, I5 (todos viram CPI-5)\n' +
+        '• CPChq\n' +
+        '• CPC\n' +
+        '• CPM\n\n' +
+        'Digite o número correspondente ao seu comando, por exemplo: "CPA-M/6", "CPI-5", "CPChq", "M6", "I5".',
       dadoExtraido: null,
     };
   }

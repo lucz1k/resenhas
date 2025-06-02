@@ -15,7 +15,7 @@ export async function executarFormaAcionamento(resposta, dados) {
 
   return {
     proximaEtapa: 'historico',
-    mensagemResposta: '📝 Agora, descreva os fatos da ocorrência para que possamos gerar o histórico final.',
+    mensagemResposta: '📝 Agora, descreva os *fatos da ocorrência* para que possamos gerar o *histórico final*.',
     dadoExtraido: texto,
   };
 }

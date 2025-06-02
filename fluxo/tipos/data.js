@@ -57,7 +57,7 @@ export async function executarData(resposta, dados) {
 
   return {
     proximaEtapa: 'hora',
-    mensagemResposta: `✅ Data registrada: *${dataFormatada}*.\nQual o horário dos fatos? (Ex: agora, 15:30, 1530)`,
+    mensagemResposta: `✅ Data registrada: *${dataFormatada}*.\nQual o *horário* dos fatos? (Ex: agora, 15:30, 1530)`,
     dadoExtraido: dataFormatada,
   };
 }

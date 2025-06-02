@@ -3,13 +3,12 @@ import { etapasFluxo } from '../etapasFluxo.js';
 export async function executarDelegado(resposta, dados) {
   const valor = resposta.trim();
 
-
-  // Campo opcional: permite seguir mesmo se vazio
-  if (!valor) {
+  // Se o usuário digitar "não", "nao", "nenhum", "n", pula e deixa em branco
+  if (/^(não|nao|nenhum|n)$/i.test(valor) || !valor) {
     dados.delegado = '';
     return {
-      proximaEtapa,
-      mensagemResposta: 'Nenhum delegado informado.' + (proximaPergunta ? `\n\n${proximaPergunta}` : ''),
+      proximaEtapa: 'data',
+      mensagemResposta: 'Nenhum delegado informado.\nAgora informe a *data da ocorrência* (hoje, amanhã, 13mai25, 13/05/25)',
       dadoExtraido: '',
     };
   }
@@ -18,7 +17,7 @@ export async function executarDelegado(resposta, dados) {
 
   return {
     proximaEtapa: 'data',
-    mensagemResposta: `✅ Delegado registrado: *${valor}*.\nAgora informe a data da ocorrência (hoje, amanhã, 13mai25, 13/05/25)`,
+    mensagemResposta: `✅ Delegado registrado: *${valor}*.\nAgora informe a *data da ocorrência* (hoje, amanhã, 13mai25, 13/05/25)`,
     dadoExtraido: valor,
   };
 }

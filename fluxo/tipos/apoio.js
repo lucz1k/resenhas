@@ -13,7 +13,7 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
   if (['não', 'nao', 'n', 'n.'].includes(texto.toLowerCase())) {
     return {
       proximaEtapa: 'envolvidos',
-      mensagemResposta: 'Certo, não registrarei viaturas de apoio. Vamos prosseguir para os envolvidos. Digite os dados da vítima ou não para prosseguir [formato NOME - VITIMA (RG:XXXXX)]',
+      mensagemResposta: 'Certo, não registrarei viaturas de apoio. Vamos prosseguir para os envolvidos. Digite os dados da *vítima* ou *não* para prosseguir [NOME (RG:XXXXX) - VITIMA ]',
       dadoExtraido: dadosProgresso.apoios,
     };
   }
@@ -48,7 +48,7 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
 
     return {
       proximaEtapa: 'apoios',
-      mensagemResposta: `📝 Apoio registrado:\n${formatarTextoApoio(novaViatura)}\n\nDeseja adicionar outro apoio? Caso não deseje, responda "não".`,
+      mensagemResposta: `📝 Apoio registrado:\n${formatarTextoApoio(novaViatura)}\n\nDeseja adicionar *outro apoio*? Caso não deseje, responda *"não"*.`,
       dadoExtraido: dadosProgresso.apoios,
     };
   }

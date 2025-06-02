@@ -7,10 +7,11 @@ export async function executarObjetos(resposta, dados) {
 
   const texto = resposta.trim();
 
-  if (/^(não|nao|nenhum|fim|encerrar)$/i.test(texto)) {
+  // Aceita "não", "nao", "nenhum", "fim", "encerrar" com ou sem acento
+  if (/^(n[aã]o|nenhum|fim|encerrar)$/i.test(texto.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))) {
     return {
       proximaEtapa: 'armamentos',
-      mensagemResposta: '📦 Deseja registrar armamentos envolvidos na ocorrência? (Tipo, numeração, calibre, disparos, cápsulas, munições)',
+      mensagemResposta: '📦 Deseja *registrar armamentos envolvidos* na ocorrência?\n\nEnvie no formato:\nTipo, numeração, calibre, disparos, cápsulas, munições\nExemplo: Pistola, 123456, .40, 2, 2, 10\nOu envie *"não"* para pular.',
       dadoExtraido: dados.objetos,
     };
   }
@@ -21,7 +22,8 @@ export async function executarObjetos(resposta, dados) {
 
   return {
     proximaEtapa: 'objetos',
-    mensagemResposta: '✅ Objeto registrado.\nDeseja adicionar outro? Caso não, responda "não".',
+    mensagemResposta:
+      '✅ Objeto registrado.\nDeseja *adicionar outro objeto* relacionado à ocorrência?\n\nExemplo: "Celular Samsung, bolsa preta, carteira com documentos".\nSe não houver mais objetos, responda *"não".*',
     dadoExtraido: dados.objetos,
   };
 }

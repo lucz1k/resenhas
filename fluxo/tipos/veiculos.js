@@ -11,7 +11,7 @@ export async function executarVeiculos(resposta, dados) {
   if (/^(não|nao|nenhum|fim|encerrar)$/i.test(entrada)) {
     return {
       proximaEtapa: 'objetos',
-      mensagemResposta: '✅ Entendido. Deseja registrar objetos relacionados à ocorrência? (Ex: celulares, bolsas, drogas etc) [Ex: celular Samsung, bolsa preta]',
+      mensagemResposta: '✅ Entendido. Deseja registrar *objetos* relacionados à ocorrência? (Ex: *celulares*, *bolsas*, *drogas* etc)\nExemplo: *celular Samsung*, *bolsa preta*',
       dadoExtraido: dados.veiculos,
     };
   }
@@ -50,7 +50,14 @@ export async function executarVeiculos(resposta, dados) {
   if (!veiculo.placa || !veiculo.modelo) {
     return {
       proximaEtapa: 'veiculos',
-      mensagemResposta: '⚠️ Por favor, informe pelo menos a *placa* e o *modelo* do veículo.',
+      mensagemResposta:
+        '⚠️ Por favor, informe pelo menos a *placa* e o *modelo* do veículo.\n\n' +
+        'Você pode informar de forma *simples* ou *detalhada*:\n' +
+        '• *Simples*: "ABC1A34, Civic"\n' +
+        '• *Simples*: "EDF3D33/Civic"\n' +
+        '• *Simples*: "EDF3D33 - Civic"\n' +
+        '• *Detalhado*: "Placa: ABC1A34, Modelo: Civic, Cor: Prata, Marca: Honda, Ano: 2020"\n\n' +
+        'Envie um *veículo* por vez. Quando terminar, responda "*não*".',
       dadoExtraido: dados.veiculos,
     };
   }
@@ -59,7 +66,14 @@ export async function executarVeiculos(resposta, dados) {
 
   return {
     proximaEtapa: 'veiculos',
-    mensagemResposta: '✅ Veículo registrado. Deseja adicionar outro? Se não, responda "não".',
+    mensagemResposta:
+      '✅ *Veículo* registrado.\nDeseja adicionar outro *veículo*?\n\n' +
+      'Exemplos:\n' +
+      '• *Simples*: "ABC1A34, Civic"\n' +
+      '• *Simples*: "EDF3D33/Civic"\n' +
+      '• *Simples*: "EDF3D33 - Civic"\n' +
+      '• *Detalhado*: "Placa: ABC1A34, Modelo: Civic, Cor: Prata, Marca: Honda, Ano: 2020"\n\n' +
+      'Se não houver mais *veículos*, responda "*não*".',
     dadoExtraido: dados.veiculos,
   };
 }

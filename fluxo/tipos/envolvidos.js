@@ -7,26 +7,55 @@ export async function executarEnvolvidos(resposta, dados) {
   const etapa = dados._etapaInternaEnvolvidos;
   const texto = resposta.trim();
 
+  // Instruções para o usuário na primeira etapa
+  if (etapa === 'vitimas' && (!dados.envolvidos.vitimas || dados.envolvidos.vitimas.length === 0)) {
+    return {
+      proximaEtapa: 'envolvidos',
+      mensagemResposta:
+        'Informe as *VÍTIMAS* (nome e, se possível, RG ou RE).\n\n' +
+        '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
+        '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
+        '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"\n\n' +
+        'Envie um por vez. Quando terminar, responda "não".',
+      dadoExtraido: dados.envolvidos,
+    };
+  }
+
   if (/^(não|nao|nenhum|fim|encerrar)$/i.test(texto)) {
     if (etapa === 'vitimas') {
       dados._etapaInternaEnvolvidos = 'autores';
       return {
         proximaEtapa: 'envolvidos',
-        mensagemResposta: 'Deseja adicionar AUTORES? NOME (RG: XXX)',
+        mensagemResposta:
+          'Deseja adicionar *AUTORES?* NOME (RG: XXX)\n\n' +
+          '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
+          '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
+          '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"',
         dadoExtraido: dados.envolvidos,
       };
     } else if (etapa === 'autores') {
       dados._etapaInternaEnvolvidos = 'testemunhas';
       return {
         proximaEtapa: 'envolvidos',
-        mensagemResposta: 'Deseja adicionar TESTEMUNHAS? NOME (RG: XXX)',
+        mensagemResposta:
+          'Deseja adicionar *TESTEMUNHAS?* NOME (RG: XXX)\n\n' +
+          '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
+          '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
+          '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"',
         dadoExtraido: dados.envolvidos,
       };
     } else {
       delete dados._etapaInternaEnvolvidos;
       return {
         proximaEtapa: 'veiculos',
-        mensagemResposta: 'Deseja adicionar veículos relacionados à ocorrência? (Placa: XXXXXX Modelo: CIVIC ou ABC1A34/CIVIC)',
+        mensagemResposta:
+          'Deseja adicionar *veículos* relacionados à ocorrência?\n\n' +
+          'Você pode informar de forma simples ou detalhada:\n' +
+          '➡️ Simples: "ABC1A34, Civic"\n' +
+          '➡️ Simples: "EDF3D33/Civic"\n' +
+          '➡️ Simples: "EDF3D33 - Civic"\n' +
+          '➡️ Detalhado: "Placa: ABC1A34, Modelo: Civic, Cor: Prata, Marca: Honda, Ano: 2020"\n\n' +
+          'Envie um veículo por vez. Quando terminar, responda "não".',
         dadoExtraido: dados.envolvidos,
       };
     }
@@ -63,7 +92,11 @@ export async function executarEnvolvidos(resposta, dados) {
 
   return {
     proximaEtapa: 'envolvidos',
-    mensagemResposta: `Envolvido registrado como ${etapa.toUpperCase()}. Deseja adicionar outro? Se não, responda "não".`,
+    mensagemResposta:
+      `Envolvido registrado como ${etapa.toUpperCase()}. Deseja adicionar outro? Se não, responda *"não"*.\n\n` +
+      '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
+      '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
+      '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"',
     dadoExtraido: dados.envolvidos,
   };
 }

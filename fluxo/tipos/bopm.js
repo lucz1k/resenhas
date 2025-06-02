@@ -4,7 +4,7 @@ export async function executarBopm(resposta, dados) {
   if (!valor) {
     return {
       proximaEtapa: 'bopm',
-      mensagemResposta: '⚠️ Por favor, informe o número do BOPM.',
+      mensagemResposta: '⚠️ Por favor, informe o número do *BOPM*.',
       dadoExtraido: null,
     };
   }
@@ -13,7 +13,7 @@ export async function executarBopm(resposta, dados) {
 
   return {
     proximaEtapa: 'bopc',
-    mensagemResposta: `✅ BOPM registrado: *${valor}*.\nAgora informe o número do BOPC. (digite não para pular)`,
+    mensagemResposta: `✅ BOPM registrado: *${valor}*.\nAgora informe o número do *BOPC*. (digite não para pular)`,
     dadoExtraido: valor,
   };
 }

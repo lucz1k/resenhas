@@ -32,10 +32,13 @@ export async function montarResenhaFinal(dados) {
     : interpretarNaturezaPrefixo(natureza);
 
   const formatarEnvolvidos = (grupo) =>
-    Array.isArray(grupo) && grupo.length > 0 ? grupo.map(p => `- ${p}`).join('\n') : '';
+    Array.isArray(grupo) && grupo.length > 0
+      ? grupo.filter(Boolean).map(p => `- ${p}`).join('\n')
+      : '';
 
   const veiculosTexto = Array.isArray(veiculos)
     ? veiculos
+        .filter(v => (v.placa && v.placa.trim()) || (v.modelo && v.modelo.trim()))
         .map(v => {
           const placa = v.placa || '';
           const modelo = v.modelo || '';
@@ -54,61 +57,69 @@ export async function montarResenhaFinal(dados) {
     : armamentos;
 
   const historicoCompleto = formaAcionamento
-    ? `Equipe ${formaAcionamento.toLowerCase()}. \n\n${historico}`.trim()
+    ? `Equipe ${formaAcionamento.toLowerCase()}.\n\n${historico}`.trim()
     : historico;
 
   // Formatação correta para equipe
   let equipeTexto = '';
   if (Array.isArray(equipe)) {
-    equipeTexto = equipe.map(eq => formatarTextoEquipe(eq.viatura, eq.policiais)).join('\n');
-  } else if (equipe && typeof equipe === 'object') {
+    equipeTexto = equipe
+      .filter(eq => eq && (eq.viatura || (eq.policiais && eq.policiais.length)))
+      .map(eq => formatarTextoEquipe(eq.viatura, eq.policiais))
+      .filter(Boolean)
+      .join('\n');
+  } else if (equipe && typeof equipe === 'object' && (equipe.viatura || (equipe.policiais && equipe.policiais.length))) {
     equipeTexto = formatarTextoEquipe(equipe.viatura, equipe.policiais);
-  } else {
-    equipeTexto = equipe || '';
+  } else if (typeof equipe === 'string' && equipe.trim()) {
+    equipeTexto = equipe;
   }
 
   // Formatação correta para apoios
   let apoiosTexto = '';
   if (Array.isArray(apoios)) {
-    apoiosTexto = apoios.map(formatarTextoApoio).join('\n');
-  } else if (apoios && typeof apoios === 'object') {
+    apoiosTexto = apoios
+      .filter(a => a && (a.viatura || (a.policiais && a.policiais.length)))
+      .map(formatarTextoApoio)
+      .filter(Boolean)
+      .join('\n');
+  } else if (apoios && typeof apoios === 'object' && (apoios.viatura || (apoios.policiais && apoios.policiais.length))) {
     apoiosTexto = formatarTextoApoio(apoios);
-  } else {
-    apoiosTexto = apoios || '';
+  } else if (typeof apoios === 'string' && apoios.trim()) {
+    apoiosTexto = apoios;
   }
 
-  // Montagem fiel ao modelo solicitado
+  // Montagem fiel ao modelo solicitado, mas só inclui linhas não vazias
   const resenha = [
     `*SECRETARIA DA SEGURANÇA PÚBLICA*`,
     `*POLÍCIA MILITAR DO ESTADO DE SÃO PAULO*`,
-    `*${grandeComando}*`,
-    `*${batalhao}*`,
-    `*${cia}*`,
-    `*${pelotao}*`,
+    grandeComando && `*${grandeComando}*`,
+    batalhao && `*${batalhao}*`,
+    cia && `*${cia}*`,
+    pelotao && `*${pelotao}*`,
     '',
-    `*DATA*: ${data}`,
-    `*HORA*: ${hora}`,
-    `*ENDEREÇO*`,
-    endereco && `${endereco}`,
+    data && `*DATA*: ${data}`,
+    hora && `*HORA*: ${hora}`,
+    endereco && `*ENDEREÇO*`,
+    endereco && endereco.toUpperCase(),
     '',
-    `*NATUREZA*: ${naturezaPorExtenso}`,
+    naturezaPorExtenso && `*NATUREZA*: ${naturezaPorExtenso}`,
     complementoNatureza && `*COMPLEMENTO*: ${complementoNatureza}`,
     bopm && `*BOPM*: ${bopm}`,
     bopc && `*BOPC*: ${bopc}`,
     delegado && `*DELEGADO*: ${delegado}`,
     '',
-    `*EQUIPE*`,
+    (equipeTexto && `*EQUIPE*`),
     equipeTexto,
     '',
-    `*APOIOS*`,
+    (apoiosTexto && `*APOIOS*`),
     apoiosTexto,
     '',
     `*ENVOLVIDOS*`,
-    `*VÍTIMAS*`,
+    (envolvidos.vitimas && envolvidos.vitimas.length > 0) && `*VÍTIMAS*`,
     formatarEnvolvidos(envolvidos.vitimas),
-    `*AUTORES*`,
+    (envolvidos.autores && envolvidos.autores.length > 0) && `*AUTORES*`,
     formatarEnvolvidos(envolvidos.autores),
-    `*TESTEMUNHAS*`,
+    (envolvidos.testemunhas && envolvidos.testemunhas.length > 0) && `*TESTEMUNHAS*`,
     formatarEnvolvidos(envolvidos.testemunhas),
     '',
     veiculosTexto && `*VEÍCULOS*\n${veiculosTexto}`,
@@ -120,7 +131,12 @@ export async function montarResenhaFinal(dados) {
     '',
     '*VAMOS TODOS JUNTOS, NINGUÉM FICA PARA TRÁS*'
   ]
-    .filter(Boolean) // Remove apenas linhas "falsas", mantém as vazias
+    .filter((linha, idx, arr) => {
+      // Mantém linhas vazias para espaçamento, mas remove campos não preenchidos
+      // (campos opcionais só entram se não forem string vazia ou undefined)
+      if (typeof linha === 'string') return true;
+      return Boolean(linha);
+    })
     .join('\n');
 
   return resenha;
