@@ -50,7 +50,7 @@ export function proxySecurity(telefone, mensagem) {
 }
 
 const abuseLimits = new Map();
-const MAX_REQUESTS = 10; // máximo de requisições permitidas por hora
+const MAX_REQUESTS = 500; // máximo de requisições permitidas por hora
 const WINDOW_MS = 60 * 60 * 1000; // 1 hora
 
 /**
