@@ -12,21 +12,21 @@ export async function executarEnvolvidos(resposta, dados) {
       dados._etapaInternaEnvolvidos = 'autores';
       return {
         proximaEtapa: 'envolvidos',
-        mensagemResposta: 'Deseja adicionar AUTORES?',
+        mensagemResposta: 'Deseja adicionar AUTORES? NOME (RG: XXX)',
         dadoExtraido: dados.envolvidos,
       };
     } else if (etapa === 'autores') {
       dados._etapaInternaEnvolvidos = 'testemunhas';
       return {
         proximaEtapa: 'envolvidos',
-        mensagemResposta: 'Deseja adicionar TESTEMUNHAS?',
+        mensagemResposta: 'Deseja adicionar TESTEMUNHAS? NOME (RG: XXX)',
         dadoExtraido: dados.envolvidos,
       };
     } else {
       delete dados._etapaInternaEnvolvidos;
       return {
         proximaEtapa: 'veiculos',
-        mensagemResposta: 'Deseja adicionar veículos relacionados à ocorrência?',
+        mensagemResposta: 'Deseja adicionar veículos relacionados à ocorrência? (Placa: XXXXXX Modelo: CIVIC ou ABC1A34/CIVIC)',
         dadoExtraido: dados.envolvidos,
       };
     }

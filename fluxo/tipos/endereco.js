@@ -9,7 +9,7 @@ export async function executarEndereco(resposta, dados, numero) {
 
     return {
       proximaEtapa: 'equipe',
-      mensagemResposta: `📍 Endereço registrado:\n*${enderecoFormatado}*\n\nQual a equipe que atendeu? Informe a viatura e os nomes dos policiais. (M-10500 - 1 Sgt PM Silva, CB PM Souza)`,
+      mensagemResposta: `📍 Endereço registrado:\n*${enderecoFormatado}*\n\nQual a equipe que atendeu? Informe a viatura e os nomes dos policiais. (M-10500 1 Sgt PM Silva, CB PM Souza)`,
       dadoExtraido: enderecoFormatado,
     };
   }

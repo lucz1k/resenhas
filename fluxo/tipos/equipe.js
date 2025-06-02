@@ -35,7 +35,7 @@ export async function executarEquipe(resposta, dados, numero) {
 
   return {
     proximaEtapa: 'apoios',
-    mensagemResposta: `✅ Equipe registrada:\n${formatarTextoEquipe(equipe.viatura, equipe.policiais)}\n\nDeseja adicionar viaturas de apoio? (Ex: M-10002 - CFP 1º TEN PM Costa, M-10501 - 2 Sgt PM Oliveira, CB PM Santos)`,
+    mensagemResposta: `✅ Equipe registrada:\n${formatarTextoEquipe(equipe.viatura, equipe.policiais)}\n\nDeseja adicionar viaturas de apoio? (Ex: M-10002 CFP 1º TEN PM Costa, M-10501 - 2 Sgt PM Oliveira, CB PM Santos)`,
     dadoExtraido: equipe,
   };
 }

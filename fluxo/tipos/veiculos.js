@@ -11,7 +11,7 @@ export async function executarVeiculos(resposta, dados) {
   if (/^(não|nao|nenhum|fim|encerrar)$/i.test(entrada)) {
     return {
       proximaEtapa: 'objetos',
-      mensagemResposta: '✅ Entendido. Deseja registrar objetos relacionados à ocorrência?',
+      mensagemResposta: '✅ Entendido. Deseja registrar objetos relacionados à ocorrência? (Ex: celulares, bolsas, drogas etc) [Ex: celular Samsung, bolsa preta]',
       dadoExtraido: dados.veiculos,
     };
   }
@@ -25,9 +25,21 @@ export async function executarVeiculos(resposta, dados) {
   const chassiRegex = /chassi\s*[:\-]?\s*([\w\d]+)/i;
   const situacaoRegex = /situa[çc]ão\s*[:\-]?\s*([^\n,]+)/i;
 
+  let placa = (entrada.match(placaRegex)?.[1] || '').toUpperCase().trim();
+  let modelo = (entrada.match(modeloRegex)?.[1] || '').trim();
+
+  // Aceita formatos simples: "placa/modelo", "placa - modelo", "placa, modelo"
+  if (!placa || !modelo) {
+    const simples = entrada.match(/^([a-zA-Z0-9\-\/]{6,10})[\s,\/-]+(.+)$/i);
+    if (simples) {
+      placa = simples[1].toUpperCase().trim();
+      modelo = simples[2].trim();
+    }
+  }
+
   const veiculo = {
-    placa: (entrada.match(placaRegex)?.[1] || '').toUpperCase().trim(),
-    modelo: (entrada.match(modeloRegex)?.[1] || '').trim(),
+    placa,
+    modelo,
     cor: (entrada.match(corRegex)?.[1] || '').trim(),
     marca: (entrada.match(marcaRegex)?.[1] || '').trim(),
     ano: (entrada.match(anoRegex)?.[1] || '').trim(),

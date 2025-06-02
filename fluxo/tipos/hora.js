@@ -41,7 +41,7 @@ export async function executarHora(resposta, dados) {
 
   return {
     proximaEtapa: 'endereco',
-    mensagemResposta: `⏰ Horário registrado: *${horaFinal}*.\nAgora, informe o endereço da ocorrência.`,
+    mensagemResposta: `⏰ Horário registrado: *${horaFinal}*.\nAgora, informe o endereço da ocorrência. (Rua X, nº Y, Bairro - Cidade)`,
     dadoExtraido: horaFinal,
   };
 }

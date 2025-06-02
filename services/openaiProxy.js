@@ -1,8 +1,23 @@
 import fetch from 'node-fetch';
 
+// Função para sortear uma das três keys
+function getRandomOpenAIKey() {
+  const keys = [
+    process.env.OPENAI_KEY_1,
+    process.env.OPENAI_KEY_2,
+    process.env.OPENAI_KEY_3
+  ].filter(Boolean); // Remove undefined caso alguma não esteja setada
+  // Sorteia uma key aleatória
+  return keys[Math.floor(Math.random() * keys.length)];
+}
+
 export async function chatCompletions(mensagens) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+  // Seleciona uma key aleatória
+  const openaiKey = getRandomOpenAIKey();
+  if (!openaiKey) throw new Error('Nenhuma OPENAI_KEY disponível nas variáveis de ambiente.');
 
   try {
     const response = await fetch(
@@ -11,10 +26,10 @@ export async function chatCompletions(mensagens) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+          'Authorization': `Bearer ${openaiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model: 'gpt-3.5-turbo',
           messages: mensagens
         }),
         signal: controller.signal

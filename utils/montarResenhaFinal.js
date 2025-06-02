@@ -1,5 +1,5 @@
 import { interpretarNaturezaPrefixo } from './proxy.js';
-import { formatarTextoArmamentos } from './formatadores.js';
+import { formatarTextoArmamentos, formatarTextoEquipe, formatarTextoApoio } from './formatadores.js';
 
 export async function montarResenhaFinal(dados) {
   const {
@@ -57,6 +57,26 @@ export async function montarResenhaFinal(dados) {
     ? `Equipe ${formaAcionamento.toLowerCase()}. \n\n${historico}`.trim()
     : historico;
 
+  // Formatação correta para equipe
+  let equipeTexto = '';
+  if (Array.isArray(equipe)) {
+    equipeTexto = equipe.map(eq => formatarTextoEquipe(eq.viatura, eq.policiais)).join('\n');
+  } else if (equipe && typeof equipe === 'object') {
+    equipeTexto = formatarTextoEquipe(equipe.viatura, equipe.policiais);
+  } else {
+    equipeTexto = equipe || '';
+  }
+
+  // Formatação correta para apoios
+  let apoiosTexto = '';
+  if (Array.isArray(apoios)) {
+    apoiosTexto = apoios.map(formatarTextoApoio).join('\n');
+  } else if (apoios && typeof apoios === 'object') {
+    apoiosTexto = formatarTextoApoio(apoios);
+  } else {
+    apoiosTexto = apoios || '';
+  }
+
   // Montagem fiel ao modelo solicitado
   const resenha = [
     `*SECRETARIA DA SEGURANÇA PÚBLICA*`,
@@ -77,12 +97,11 @@ export async function montarResenhaFinal(dados) {
     bopc && `*BOPC*: ${bopc}`,
     delegado && `*DELEGADO*: ${delegado}`,
     '',
-    '',
     `*EQUIPE*`,
-    equipe && `${equipe}`,
+    equipeTexto,
     '',
     `*APOIOS*`,
-    apoios && `${apoios}`,
+    apoiosTexto,
     '',
     `*ENVOLVIDOS*`,
     `*VÍTIMAS*`,
@@ -101,12 +120,7 @@ export async function montarResenhaFinal(dados) {
     '',
     '*VAMOS TODOS JUNTOS, NINGUÉM FICA PARA TRÁS*'
   ]
-    .filter((linha, idx, arr) => {
-      // Remove linhas falsas/vazias e mantém apenas uma linha em branco seguida
-      if (!linha) return false;
-      if (linha === '' && arr[idx - 1] === '') return false;
-      return true;
-    })
+    .filter(Boolean) // Remove apenas linhas "falsas", mantém as vazias
     .join('\n');
 
   return resenha;

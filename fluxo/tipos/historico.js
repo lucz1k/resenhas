@@ -29,10 +29,16 @@ ${historicoBruto}
       { role: 'user', content: prompt }
     ]);
 
+    console.log('[HISTÓRICO][OPENAI][RESPOSTA]', JSON.stringify(respostaGPT, null, 2));
+
     historicoFinal = (typeof respostaGPT === 'string'
       ? respostaGPT
       : respostaGPT?.choices?.[0]?.message?.content || '[ERRO NA GERAÇÃO DO HISTÓRICO]'
     ).trim();
+
+    if (historicoFinal === '[ERRO NA GERAÇÃO DO HISTÓRICO]') {
+      console.error('[HISTÓRICO][ERRO] Resposta inesperada da OpenAI:', JSON.stringify(respostaGPT, null, 2));
+    }
 
   } catch (error) {
     console.error('[ERRO OPENAI]', error);
