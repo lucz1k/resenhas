@@ -42,7 +42,7 @@ const resenhaController = {
         etapaAtual: 'grandeComando',
         dados: {},
       });
-      await enviarMensagem(telefone, '👮‍♂️ Bem-vindo! Vamos começar a montar a resenha. Informe o *GRANDE COMANDO* (ex: CPA-M/10, CPI-1).');
+      await enviarMensagem(telefone, '👮‍♂️ Bem-vindo! Vamos começar a montar a resenha. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
       return;
     }
 
@@ -70,7 +70,7 @@ const resenhaController = {
     }
 
     try {
-      const { proximaEtapa, mensagemResposta, dadoExtraido } = await executor(texto, progresso.dados, telefone);
+      const { proximaEtapa, mensagemResposta, dadoExtraido } = await executor(texto, progresso.dados, etapa.chave);
 
       progresso.dados[progresso.etapaAtual] = dadoExtraido;
       progresso.etapaAtual = proximaEtapa;

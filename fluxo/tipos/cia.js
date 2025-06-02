@@ -28,7 +28,7 @@ export async function executarCia(resposta) {
 
   return {
     proximaEtapa: 'pelotao',
-    mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o Pelotão.`,
+    mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o Pelotão (Ex. 1, 2, 3).`,
     dadoExtraido: ciaFormatada,
   };
 }
