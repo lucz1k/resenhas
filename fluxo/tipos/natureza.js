@@ -21,7 +21,7 @@ export async function executarNatureza(resposta, dados) {
   if (!descricao) {
     return {
       proximaEtapa: 'natureza',
-      mensagemResposta: '❌ Código de natureza inválido. Por favor, envie um código válido como *C04*, *A01* ou *B03*.'
+      mensagemResposta: '❌ Código de natureza inválido. Por favor, envie um código válido como *C04*, *A01* ou *B03*.',
       dadoExtraido: null,
     };
   }
