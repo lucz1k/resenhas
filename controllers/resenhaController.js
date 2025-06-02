@@ -42,7 +42,7 @@ const resenhaController = {
         etapaAtual: 'grandeComando',
         dados: {},
       });
-      await enviarMensagem(telefone, '👮‍♂️ Bem-vindo! Vamos começar a montar a resenha. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
+      await enviarMensagem(telefone, '👮‍♂️ Bem-vindo ao ResenhaZap! Vamos começar a montar a a sua resenha de ocorrência. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
       return;
     }
 
