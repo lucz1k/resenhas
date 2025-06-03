@@ -3,7 +3,7 @@ export async function executarArmamentos(resposta, dados) {
 
   const texto = resposta.trim();
 
-  const encerrar = /^(não|nao|nenhum|fim|encerrar)$/i.test(texto);
+  const encerrar = /^(não|nao|nenhum|fim|encerrar|pular)$/i.test(texto);
   if (encerrar) {
     return {
       proximaEtapa: 'formaAcionamento',

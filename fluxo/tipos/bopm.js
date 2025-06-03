@@ -13,7 +13,7 @@ export async function executarBopm(resposta, dados) {
 
   return {
     proximaEtapa: 'bopc',
-    mensagemResposta: `✅ BOPM registrado: *${valor}*.\nAgora informe o número do *BOPC*. (digite não para pular)`,
+    mensagemResposta: `✅ BOPM registrado: *${valor}*.\nAgora informe o número do *BOPC*. (digite 'pular' para ignorar)`,
     dadoExtraido: valor,
   };
 }

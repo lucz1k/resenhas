@@ -1,6 +1,17 @@
 export async function executarCia(resposta) {
   const entrada = resposta.trim().toLowerCase();
 
+  // Verifica se é uma entrada para Estado Maior
+  const entradasEstadoMaior = ['estado maior', 'em', 'est', 'estado-maior', 'estado_maior'];
+  if (entradasEstadoMaior.includes(entrada)) {
+    const ciaFormatada = 'Estado Maior';
+    return {
+      proximaEtapa: 'pelotao',
+      mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o *Pelotão* (Ex. 1, 2, 3 ou pular se não houver).`,
+      dadoExtraido: ciaFormatada,
+    };
+  }
+
   // Aceita: "1ª", "2ª", "1ª cia", "2ª companhia", "1 cia", "2 companhia"
   const match = entrada.match(/^(\d{1,2})(ª|a)?(\s*(cia|companhia))?$/i);
 
@@ -8,7 +19,7 @@ export async function executarCia(resposta) {
   if (!match) {
     return {
       proximaEtapa: 'cia',
-      mensagemResposta: '❌ Formato inválido para Companhia. Exemplos válidos: 1ª, 2ª, 1ª Cia, 2 Cia, 3ª Companhia.',
+      mensagemResposta: '❌ Formato inválido para Companhia. Exemplos válidos: 1ª, 2ª, 1ª Cia, 2 Cia, 3ª Companhia ou Estado Maior.',
       dadoExtraido: null,
     };
   }
@@ -28,7 +39,7 @@ export async function executarCia(resposta) {
 
   return {
     proximaEtapa: 'pelotao',
-    mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o *Pelotão* (Ex. 1, 2, 3).`,
+    mensagemResposta: `✅ Companhia registrada: *${ciaFormatada}*. Agora informe o *Pelotão* (Ex. 1, 2, 3 ou pular se não houver).`,
     dadoExtraido: ciaFormatada,
   };
 }

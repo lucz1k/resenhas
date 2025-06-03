@@ -8,10 +8,10 @@ export async function executarObjetos(resposta, dados) {
   const texto = resposta.trim();
 
   // Aceita "não", "nao", "nenhum", "fim", "encerrar" com ou sem acento
-  if (/^(n[aã]o|nenhum|fim|encerrar)$/i.test(texto.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))) {
+  if (/^(n[aã]o|nenhum|fim|encerrar|pular)$/i.test(texto.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))) {
     return {
       proximaEtapa: 'armamentos',
-      mensagemResposta: '📦 Deseja *registrar armamentos envolvidos* na ocorrência?\n\nEnvie no formato:\nTipo, numeração, calibre, disparos, cápsulas, munições\nExemplo: Pistola, 123456, .40, 2, 2, 10\nOu envie *"não"* para pular.',
+      mensagemResposta: '📦 Deseja *registrar armamentos envolvidos* na ocorrência?\n\nEnvie no formato:\nTipo, numeração, calibre, disparos, cápsulas, munições\nExemplo: Pistola, 123456, .40, 2, 2, 10\nOu envie *"pular"* para avançar',
       dadoExtraido: dados.objetos,
     };
   }

@@ -6,9 +6,16 @@ export async function executarEnvolvidos(resposta, dados) {
 
   const etapa = dados._etapaInternaEnvolvidos;
   const texto = resposta.trim();
+  const textoMinusculo = texto.toLowerCase();
+
+  const respostasNegativas = ['pular', 'nao', 'não', 'nenhum', 'fim', 'encerrar'];
 
   // Instruções para o usuário na primeira etapa
-  if (etapa === 'vitimas' && (!dados.envolvidos.vitimas || dados.envolvidos.vitimas.length === 0)) {
+  if (
+    etapa === 'vitimas' &&
+    dados.envolvidos.vitimas.length === 0 &&
+    !respostasNegativas.includes(textoMinusculo)
+  ) {
     return {
       proximaEtapa: 'envolvidos',
       mensagemResposta:
@@ -16,12 +23,12 @@ export async function executarEnvolvidos(resposta, dados) {
         '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
         '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
         '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"\n\n' +
-        'Envie um por vez. Quando terminar, responda "não".',
+        'Envie um por vez. Quando terminar, responda *"pular"*.',
       dadoExtraido: dados.envolvidos,
     };
   }
 
-  if (/^(não|nao|nenhum|fim|encerrar)$/i.test(texto)) {
+  if (respostasNegativas.includes(textoMinusculo)) {
     if (etapa === 'vitimas') {
       dados._etapaInternaEnvolvidos = 'autores';
       return {
@@ -30,7 +37,8 @@ export async function executarEnvolvidos(resposta, dados) {
           'Deseja adicionar *AUTORES?* NOME (RG: XXX)\n\n' +
           '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
           '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
-          '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"',
+          '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"\n\n' +
+          'Envie um por vez. Quando terminar, responda *"pular"*.',
         dadoExtraido: dados.envolvidos,
       };
     } else if (etapa === 'autores') {
@@ -41,7 +49,8 @@ export async function executarEnvolvidos(resposta, dados) {
           'Deseja adicionar *TESTEMUNHAS?* NOME (RG: XXX)\n\n' +
           '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
           '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
-          '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"',
+          '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"\n\n' +
+          'Envie um por vez. Quando terminar, responda *"pular"*.',
         dadoExtraido: dados.envolvidos,
       };
     } else {
@@ -55,7 +64,7 @@ export async function executarEnvolvidos(resposta, dados) {
           '➡️ Simples: "EDF3D33/Civic"\n' +
           '➡️ Simples: "EDF3D33 - Civic"\n' +
           '➡️ Detalhado: "Placa: ABC1A34, Modelo: Civic, Cor: Prata, Marca: Honda, Ano: 2020"\n\n' +
-          'Envie um veículo por vez. Quando terminar, responda "não".',
+          'Envie um veículo por vez. Quando terminar, responda *"pular"*.',
         dadoExtraido: dados.envolvidos,
       };
     }
@@ -93,7 +102,7 @@ export async function executarEnvolvidos(resposta, dados) {
   return {
     proximaEtapa: 'envolvidos',
     mensagemResposta:
-      `Envolvido registrado como ${etapa.toUpperCase()}. Deseja adicionar outro? Se não, responda *"não"*.\n\n` +
+      `Envolvido registrado como ${etapa.toUpperCase()}. Deseja adicionar outro? Se não, responda *"pular"*.\n\n` +
       '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
       '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +
       '➡️ Para civis: Exemplo: "Maria Souza (RG: 12345678)"',

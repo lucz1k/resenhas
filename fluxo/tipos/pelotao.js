@@ -2,12 +2,25 @@ import { etapasFluxo } from '../etapasFluxo.js';
 
 export async function executarPelotao(resposta) {
   const entrada = resposta.trim().toLowerCase();
+
+  // Se o usuário digitar "pular", registra em branco e avança
+  if (entrada === 'pular') {
+    const idxAtual = etapasFluxo.findIndex(et => et.chave === 'pelotao');
+    const proximaPergunta = etapasFluxo[idxAtual + 1]?.pergunta;
+
+    return {
+      proximaEtapa: 'natureza',
+      mensagemResposta: `ℹ️ Etapa do *Pelotão* ignorada.` + (proximaPergunta ? `\n\n${proximaPergunta}` : ''),
+      dadoExtraido: '',
+    };
+  }
+
   const match = entrada.match(/^(\d{1,2})\s*(º|o|a)?\s*(pel|pelotao|pelotão)?/);
 
   if (!match) {
     return {
       proximaEtapa: 'natureza',
-      mensagemResposta: '❌ Formato inválido para Pelotão. Exemplos válidos: *1º Pel*, *2 Pelotão*.',
+      mensagemResposta: '❌ Formato inválido para Pelotão. Exemplos válidos: *1º Pel*, *2 Pelotão*. Ou digite *pular* para ignorar.',
       dadoExtraido: null,
     };
   }
@@ -23,7 +36,6 @@ export async function executarPelotao(resposta) {
 
   const pelotaoFormatado = `${numero}º Pel`;
 
-  // Busca a próxima pergunta
   const idxAtual = etapasFluxo.findIndex(et => et.chave === 'pelotao');
   const proximaPergunta = etapasFluxo[idxAtual + 1]?.pergunta;
 

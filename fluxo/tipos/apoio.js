@@ -9,11 +9,11 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
 
   const texto = inputUsuario.trim();
 
-  // Verifica resposta negativa
-  if (['não', 'nao', 'n', 'n.'].includes(texto.toLowerCase())) {
+  // Verifica se o usuário deseja pular a etapa
+  if (['pular', 'pula', 'skip', 'ignorar'].includes(texto.toLowerCase())) {
     return {
       proximaEtapa: 'envolvidos',
-      mensagemResposta: 'Certo, não registrarei viaturas de apoio. Vamos prosseguir para os envolvidos. Digite os dados da *vítima* ou *não* para prosseguir [NOME (RG:XXXXX) - VITIMA ]',
+      mensagemResposta: 'Etapa de apoio ignorada. Vamos prosseguir para os envolvidos. Digite os dados da *vítima* ou *pular* para seguir adiante [NOME (RG:XXXXX) - VÍTIMA]',
       dadoExtraido: dadosProgresso.apoios,
     };
   }
@@ -48,7 +48,7 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
 
     return {
       proximaEtapa: 'apoios',
-      mensagemResposta: `📝 Apoio registrado:\n${formatarTextoApoio(novaViatura)}\n\nDeseja adicionar *outro apoio*? Caso não deseje, responda *"não"*.`,
+      mensagemResposta: `📝 Apoio registrado:\n${formatarTextoApoio(novaViatura)}\n\nDeseja adicionar *outro apoio*? Caso não deseje, responda *"pular"*.`,
       dadoExtraido: dadosProgresso.apoios,
     };
   }

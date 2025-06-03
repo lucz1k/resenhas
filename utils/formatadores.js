@@ -8,7 +8,7 @@ export function formatarCia(valor) {
 
 export function formatarPosto(nome) {
   return nome
-    .replace(/SD PM/i, 'Cb PM')
+    .replace(/SD PM/i, 'Sd PM')
     .replace(/CB PM/i, 'Cb PM')
     .replace(/3º SGT PM/i, '3º Sgt PM')
     .replace(/2º SGT PM/i, '2º Sgt PM')
