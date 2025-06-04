@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import resenhaRoutes from './routes/resenha.js';
 import webhookRouter from './services/zapi.js';
-import openaiProxyRouter from './utils/openaiProxy.js';
+import openaiProxyRouter from './proxy/openaiProxy.js';
 
 dotenv.config();
 
