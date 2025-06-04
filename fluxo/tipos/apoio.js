@@ -13,7 +13,8 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
   if (['pular', 'pula', 'skip', 'ignorar'].includes(texto.toLowerCase())) {
     return {
       proximaEtapa: 'envolvidos',
-      mensagemResposta: 'Etapa de apoio ignorada. Vamos prosseguir para os envolvidos. Digite os dados da *vítima* ou *pular* para seguir adiante
+     mensagemResposta: 'Etapa de apoio ignorada. Vamos prosseguir para os envolvidos. Digite os dados da *vítima* ou *pular* para seguir adiante.',
+      mensagemRespostaAdicional:
               'Informe as *VÍTIMAS* (nome e, se possível, RG ou RE).\n\n' +
         '➡️ Para PM da ativa: Exemplo: "Cb PM João Silva, RE 1234567"\n' +
         '➡️ Para PM da reserva: Exemplo: "Cb PM João Silva, da reserva, última unidade 10º BPM/M"\n' +

@@ -20,4 +20,3 @@ export async function executarDelegado(resposta, dados) {
     mensagemResposta: `✅ Delegado registrado: *${valor}*.\nAgora informe a *data da ocorrência* (hoje, amanhã, 13mai25, 13/05/25)`,
     dadoExtraido: valor,
   };
-}
