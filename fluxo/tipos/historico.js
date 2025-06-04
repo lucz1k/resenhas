@@ -6,7 +6,7 @@ export async function executarHistorico(resposta, dados, numero) {
   const historicoBruto = resposta.trim();
 
   const prompt = `
-Reescreva o texto abaixo para relatório oficial da Polícia Militar do Estado de São Paulo, mantendo clareza, objetividade, impessoalidade e norma culta. Não use emojis ou linguagem coloquial. Corrija apenas a caixa alta conforme a norma gramatical. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
+Corrija o português do texto. Não use emojis ou linguagem coloquial ou altere o sentido. Corrija apenas a caixa alta conforme a norma gramatical. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
 
 Texto:
 ${historicoBruto}
