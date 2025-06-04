@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import resenhaRoutes from './routes/resenha.js';
 import webhookRouter from './services/zapi.js';
+import openaiProxyRouter from './utils/openaiProxy.js';
 
 dotenv.config();
 
@@ -17,6 +18,9 @@ app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
+
+//rota do proxy OpenAI
+app.use('/', openaiProxyRouter);
 
 // ✅ Rota do Webhook (ex: Z-API) separada
 app.use('/webhook', webhookRouter);

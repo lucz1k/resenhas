@@ -29,7 +29,7 @@ export async function executarBatalhao(resposta) {
 
   return {
     proximaEtapa: 'cia',
-    mensagemResposta: `✅ Batalhão registrado: *${texto}*. Agora informe a *Companhia* (ex: 1, 2, 3).`,
+    mensagemResposta: `✅ Batalhão registrado: *${texto}*. Agora informe a *Companhia* (ex: 1, 2, 3 ou EM).`,
     dadoExtraido: texto,
   };
 }

@@ -3,8 +3,8 @@ import { etapasFluxo } from '../etapasFluxo.js';
 export async function executarDelegado(resposta, dados) {
   const valor = resposta.trim();
 
-  // Se o usuário digitar "não", "nao", "nenhum", "n", pula e deixa em branco
-  if (/^(não|nao|nenhum|n)$/i.test(valor) || !valor) {
+  // Se o usuário digitar "pular", "não", etc., deixa em branco
+  if (/^(não|nao|nenhum|n|pular)$/i.test(valor) || !valor)
     dados.delegado = '';
     return {
       proximaEtapa: 'data',
@@ -21,4 +21,3 @@ export async function executarDelegado(resposta, dados) {
     dadoExtraido: valor,
   };
 }
-
