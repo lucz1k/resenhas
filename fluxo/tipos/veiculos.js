@@ -8,10 +8,11 @@ export async function executarVeiculos(resposta, dados) {
   const entrada = resposta.trim();
 
   // Verifica se o usuário deseja encerrar
-  if (/^(não|nao|nenhum|fim|encerrar)$/i.test(entrada)) {
+  if (/^(não|nao|nenhum|fim|encerrar|pular)$/i.test(entrada)) {
     return {
       proximaEtapa: 'objetos',
-      mensagemResposta: '✅ Entendido. Deseja registrar *objetos* relacionados à ocorrência? (Ex: *celulares*, *bolsas*, *drogas* etc)\nExemplo: *celular Samsung*, *bolsa preta*',
+      mensagemResposta:
+        '✅ Etapa de *veículos* finalizada.\n\nDeseja registrar *objetos* relacionados à ocorrência?\n\nExemplos de *objetos*: *celulares*, *bolsas*, *drogas*, *documentos*, etc.\nExemplo de resposta: *celular Samsung*, *bolsa preta*, *carteira com documentos*.\n\nSe não houver *objetos*, responda "*não*" ou "*pular*".',
       dadoExtraido: dados.veiculos,
     };
   }
@@ -57,7 +58,7 @@ export async function executarVeiculos(resposta, dados) {
         '• *Simples*: "EDF3D33/Civic"\n' +
         '• *Simples*: "EDF3D33 - Civic"\n' +
         '• *Detalhado*: "Placa: ABC1A34, Modelo: Civic, Cor: Prata, Marca: Honda, Ano: 2020"\n\n' +
-        'Envie um *veículo* por vez. Quando terminar, responda "*não*".',
+        'Envie um *veículo* por vez. Quando terminar, responda "*não*" ou "*pular*".',
       dadoExtraido: dados.veiculos,
     };
   }
@@ -73,7 +74,7 @@ export async function executarVeiculos(resposta, dados) {
       '• *Simples*: "EDF3D33/Civic"\n' +
       '• *Simples*: "EDF3D33 - Civic"\n' +
       '• *Detalhado*: "Placa: ABC1A34, Modelo: Civic, Cor: Prata, Marca: Honda, Ano: 2020"\n\n' +
-      'Se não houver mais *veículos*, responda "*não*".',
+      'Se não houver mais *veículos*, responda "*não*" ou "*pular*".',
     dadoExtraido: dados.veiculos,
   };
 }
