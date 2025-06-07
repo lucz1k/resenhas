@@ -25,15 +25,23 @@ export async function finalizarResenha(telefone, textoFinal, enviarMensagem, cal
  * Segurança do proxy – valida se pode continuar o processamento.
  * Bloqueia números ou mensagens indesejadas.
  */
-export function proxySecurity(telefone, mensagem) {
+export function proxySecurity(telefone, mensagem, grupoId) {
   // Lista de números bloqueados
   const numerosBloqueados = ['5511999999999', '5511888888888'];
+
+  // Lista de grupos bloqueados
+  const gruposBloqueados = ['5514997664664-1621869726', 'ID_DO_GRUPO2'];
 
   // Lista de palavras proibidas
   const palavrasProibidas = ['spam', 'ofensa', 'proibido'];
 
   // Bloqueia se o número estiver na lista
   if (numerosBloqueados.includes(telefone)) {
+    return false;
+  }
+
+  // Bloqueia se o grupo estiver na lista
+  if (grupoId && gruposBloqueados.includes(grupoId)) {
     return false;
   }
 
