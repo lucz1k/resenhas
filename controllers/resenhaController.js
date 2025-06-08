@@ -173,7 +173,7 @@ ${textoParaCorrigir}
       await enviarMensagem(telefone, `❌ Ocorreu um erro ao processar a etapa ${etapa.chave}. Tente novamente ou envie #reset para recomeçar.`);
     }
 
-    // Cadastro - Nome
+    // FLUXO DE CADASTRO
     if (progresso.etapaAtual === 'cadastro_nome') {
       progresso.dadosCadastro.nome = texto;
       progresso.etapaAtual = 'cadastro_batalhao';
