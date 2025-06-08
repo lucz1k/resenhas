@@ -30,6 +30,7 @@ export function proxySecurity(telefone, mensagem, grupoId) {
 
   // Bloqueia todos os grupos (IDs de grupo têm hífen)
   if (grupoId && grupoId.includes('-')) {
+    console.log('Mensagem de grupo bloqueada!');
     return false;
   }
 
@@ -40,6 +41,10 @@ export function proxySecurity(telefone, mensagem, grupoId) {
   const palavrasProibidas = ['spam', 'ofensa', 'proibido'];
 
   if (numerosBloqueados.includes(telefone)) {
+    return false;
+  }
+
+  if (telefone && telefone.includes('-')) {
     return false;
   }
 
@@ -95,4 +100,5 @@ export function interpretarNaturezaPrefixo(codigoNatureza) {
 
 export function registrarLog({ telefone, ip, prompt }) {
   console.log(`[LOG] Telefone: ${telefone} | IP: ${ip} | Mensagem: ${prompt}`);
+  console.log('Telefone:', telefone, 'GrupoId:', grupoId, 'Texto:', mensagem);
 }

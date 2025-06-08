@@ -41,7 +41,7 @@ const resenhaController = {
       return enviarMensagem(telefone, '🚫 Limite de uso excedido. Tente novamente mais tarde.');
     }
 
-    const grupoId = mensagem.groupId || mensagem.chatId || mensagem.to || null; // ajuste conforme sua plataforma
+    const grupoId = mensagem.from || mensagem.chatId || mensagem.groupId || mensagem.to || null; // ajuste conforme sua plataforma
 
     if (!proxySecurity(telefone, texto, grupoId)) {
       return enviarMensagem(telefone, '❌ Mensagem inválida ou não suportada.');
