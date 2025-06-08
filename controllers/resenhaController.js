@@ -44,7 +44,7 @@ const resenhaController = {
     const grupoId = mensagem.from || mensagem.chatId || mensagem.groupId || mensagem.to || null; // ajuste conforme sua plataforma
 
     if (!proxySecurity(telefone, texto, grupoId)) {
-      return enviarMensagem(telefone, '❌ Mensagem inválida ou não suportada.');
+      return; // Silencioso, não responde nada em grupos
     }
 
     // Carrega progresso atual do usuário
