@@ -5,11 +5,16 @@ import { chatCompletions } from '../services/openai.js';
 import { enviarMensagem } from '../services/zapi.js';
 import { obterProgresso, salvarProgresso, limparProgresso as resetarProgresso } from '../db/progresso.js';
 import { executores } from '../fluxo/executores.js';
+import { salvarUsuario, buscarUsuario } from '../db/usuarios.js';
 
 const MENU = [
   'Escolha uma opção:',
   '1️⃣ *Corrigir um histórico*',
-  '2️⃣ *Fazer uma resenha*'
+  '2️⃣ *Fazer uma resenha*',
+  '3️⃣ *Cadastrar meus dados*',
+  '4️⃣ *Editar meus dados*',
+  '',
+  'ℹ️ *Dica*: Se quiser voltar ao menu inicial a qualquer momento, envie *#reset*.'
 ].join('\n');
 
 const resenhaController = {
@@ -61,10 +66,27 @@ const resenhaController = {
         return;
       }
       if (texto === '2' || /resenha/i.test(texto)) {
+        const dadosPre = await buscarUsuario(telefone) || {};
         progresso.etapaAtual = 'grandeComando';
-        progresso.dados = {};
+        progresso.dados = { ...dadosPre };
         await salvarProgresso(telefone, progresso);
         await enviarMensagem(telefone, 'Vamos começar a montar sua resenha. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
+        return;
+      }
+      if (texto === '3' || /cadastrar/i.test(texto)) {
+        progresso.etapaAtual = 'cadastro_nome';
+        progresso.dadosCadastro = {};
+        await salvarProgresso(telefone, progresso);
+        await enviarMensagem(telefone, 'Vamos cadastrar seus dados!\nQual seu *nome* completo?');
+        return;
+      }
+      if (texto === '4' || /editar/i.test(texto)) {
+        // Busca dados atuais para editar
+        const dadosAtuais = await buscarUsuario(telefone) || {};
+        progresso.etapaAtual = 'editar_nome';
+        progresso.dadosCadastro = { ...dadosAtuais };
+        await salvarProgresso(telefone, progresso);
+        await enviarMensagem(telefone, `Vamos editar seus dados!\nSeu nome atual é: *${dadosAtuais.nome || 'não cadastrado'}*\nEnvie o novo nome ou digite "manter" para não alterar.`);
         return;
       }
       // Se não reconheceu, mostra o menu de novo
@@ -74,11 +96,30 @@ const resenhaController = {
 
     // FLUXO DE CORREÇÃO DE HISTÓRICO
     if (progresso.etapaAtual === 'corrigirHistorico') {
+      let textoParaCorrigir = texto;
+
+      // Verifica se veio áudio (exemplo: mensagem.audioPath ou mensagem.audioUrl)
+      if (!textoParaCorrigir && (mensagem.audioPath || mensagem.audioUrl)) {
+        try {
+          // Importe e use sua função de transcrição, ex:
+          // import { audioParaTexto } from '../services/speechToText.js';
+          textoParaCorrigir = await audioParaTexto(mensagem.audioPath || mensagem.audioUrl);
+        } catch (err) {
+          await enviarMensagem(telefone, '❌ Não foi possível transcrever o áudio. Envie novamente ou tente em texto.');
+          return;
+        }
+      }
+
+      if (!textoParaCorrigir) {
+        await enviarMensagem(telefone, '❌ Não entendi o histórico. Por favor, envie o texto ou um áudio claro.');
+        return;
+      }
+
       const prompt = `
-Corrija o português do texto. Não use emojis ou linguagem coloquial ou altere o sentido. Corrija apenas a caixa alta conforme a norma gramatical. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
+Corrija o português do texto. Não use emojis ou linguagem coloquial ou altere o sentido. Utilize caixa alta apenas conforme a norma. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
 
 Texto:
-${texto}
+${textoParaCorrigir}
       `;
       try {
         const respostaGPT = await chatCompletions([
@@ -130,6 +171,106 @@ ${texto}
       }
     } catch (erro) {
       await enviarMensagem(telefone, `❌ Ocorreu um erro ao processar a etapa ${etapa.chave}. Tente novamente ou envie #reset para recomeçar.`);
+    }
+
+    // Cadastro - Nome
+    if (progresso.etapaAtual === 'cadastro_nome') {
+      progresso.dadosCadastro.nome = texto;
+      progresso.etapaAtual = 'cadastro_batalhao';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, 'Qual seu *batalhão*?');
+      return;
+    }
+
+    // Cadastro - Batalhão
+    if (progresso.etapaAtual === 'cadastro_batalhao') {
+      progresso.dadosCadastro.batalhao = texto;
+      progresso.etapaAtual = 'cadastro_grandeComando';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, 'Qual seu *grande comando*?');
+      return;
+    }
+
+    // Cadastro - Grande Comando
+    if (progresso.etapaAtual === 'cadastro_grandeComando') {
+      progresso.dadosCadastro.grandeComando = texto;
+      progresso.etapaAtual = 'cadastro_cia';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, 'Qual sua *CIA*?');
+      return;
+    }
+
+    // Cadastro - CIA
+    if (progresso.etapaAtual === 'cadastro_cia') {
+      progresso.dadosCadastro.cia = texto;
+      progresso.etapaAtual = 'cadastro_pelotao';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, 'Qual seu *Pelotão*?');
+      return;
+    }
+
+    // Cadastro - Pelotão
+    if (progresso.etapaAtual === 'cadastro_pelotao') {
+      progresso.dadosCadastro.pelotao = texto;
+      await salvarUsuario(telefone, progresso.dadosCadastro);
+      await enviarMensagem(telefone, '✅ Cadastro realizado com sucesso!\nSe quiser iniciar uma resenha ou corrigir um histórico, escolha uma opção:\n\n' + MENU);
+      await salvarProgresso(telefone, { etapaAtual: 'menu', dados: {} });
+      return;
+    }
+
+    // Edição - Nome
+    if (progresso.etapaAtual === 'editar_nome') {
+      if (texto.toLowerCase() !== 'manter') {
+        progresso.dadosCadastro.nome = texto;
+      }
+      progresso.etapaAtual = 'editar_batalhao';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, `Seu batalhão atual é: *${progresso.dadosCadastro.batalhao || 'não cadastrado'}*\nEnvie o novo batalhão ou digite "manter" para não alterar.`);
+      return;
+    }
+
+    // Edição - Batalhão
+    if (progresso.etapaAtual === 'editar_batalhao') {
+      if (texto.toLowerCase() !== 'manter') {
+        progresso.dadosCadastro.batalhao = texto;
+      }
+      progresso.etapaAtual = 'editar_grandeComando';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, `Seu grande comando atual é: *${progresso.dadosCadastro.grandeComando || 'não cadastrado'}*\nEnvie o novo grande comando ou digite "manter" para não alterar.`);
+      return;
+    }
+
+    // Edição - Grande Comando
+    if (progresso.etapaAtual === 'editar_grandeComando') {
+      if (texto.toLowerCase() !== 'manter') {
+        progresso.dadosCadastro.grandeComando = texto;
+      }
+      progresso.etapaAtual = 'editar_cia';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, `Sua CIA atual é: *${progresso.dadosCadastro.cia || 'não cadastrado'}*\nEnvie a nova CIA ou digite "manter" para não alterar.`);
+      return;
+    }
+
+    // Edição - CIA
+    if (progresso.etapaAtual === 'editar_cia') {
+      if (texto.toLowerCase() !== 'manter') {
+        progresso.dadosCadastro.cia = texto;
+      }
+      progresso.etapaAtual = 'editar_pelotao';
+      await salvarProgresso(telefone, progresso);
+      await enviarMensagem(telefone, `Seu Pelotão atual é: *${progresso.dadosCadastro.pelotao || 'não cadastrado'}*\nEnvie o novo Pelotão ou digite "manter" para não alterar.`);
+      return;
+    }
+
+    // Edição - Pelotão
+    if (progresso.etapaAtual === 'editar_pelotao') {
+      if (texto.toLowerCase() !== 'manter') {
+        progresso.dadosCadastro.pelotao = texto;
+      }
+      await salvarUsuario(telefone, progresso.dadosCadastro);
+      await enviarMensagem(telefone, '✅ Dados editados com sucesso!\nSe quiser iniciar uma resenha ou corrigir um histórico, escolha uma opção:\n\n' + MENU);
+      await salvarProgresso(telefone, { etapaAtual: 'menu', dados: {} });
+      return;
     }
   }
 };

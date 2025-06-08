@@ -1,15 +1,34 @@
 // fluxo/tipos/historico.js
 
 import { chatCompletions } from '../../services/openai.js';
+import { audioParaTexto } from '../../services/speechToText.js';
 
 export async function executarHistorico(resposta, dados, numero) {
-  const historicoBruto = resposta.trim();
+  let historicoBruto = '';
+
+  if (typeof resposta === 'string' && resposta.trim()) {
+    historicoBruto = resposta.trim();
+  } else if (resposta.audioPath) {
+    historicoBruto = await audioParaTexto(resposta.audioPath);
+  } else {
+    return {
+      proximaEtapa: 'historico',
+      mensagemResposta: '❌ Não entendi o histórico. Por favor, envie o texto ou um áudio claro.',
+      dadoExtraido: null,
+    };
+  }
+
+  // Inclui a forma de acionamento no início do texto
+  let textoParaCorrigir = historicoBruto;
+  if (dados.formaAcionamento && typeof dados.formaAcionamento === 'string' && dados.formaAcionamento.trim()) {
+    textoParaCorrigir = `Equipe ${dados.formaAcionamento.trim().toLowerCase()}.\n\n${historicoBruto}`;
+  }
 
   const prompt = `
 Corrija o português do texto. Não use emojis ou linguagem coloquial ou altere o sentido. Corrija apenas a caixa alta conforme a norma gramatical. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
 
 Texto:
-${historicoBruto}
+${textoParaCorrigir}
 `;
 
   let historicoFinal;

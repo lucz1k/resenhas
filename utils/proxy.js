@@ -26,26 +26,23 @@ export async function finalizarResenha(telefone, textoFinal, enviarMensagem, cal
  * Bloqueia números ou mensagens indesejadas.
  */
 export function proxySecurity(telefone, mensagem, grupoId) {
+  console.log('GrupoId recebido:', grupoId);
+
+  // Bloqueia todos os grupos (IDs terminam com @g.us)
+  if (grupoId && grupoId.endsWith('@g.us')) {
+    return false;
+  }
+
   // Lista de números bloqueados
   const numerosBloqueados = ['5511999999999', '5511888888888'];
-
-  // Lista de grupos bloqueados
-  const gruposBloqueados = ['5514997664664-1621869726', 'ID_DO_GRUPO2'];
 
   // Lista de palavras proibidas
   const palavrasProibidas = ['spam', 'ofensa', 'proibido'];
 
-  // Bloqueia se o número estiver na lista
   if (numerosBloqueados.includes(telefone)) {
     return false;
   }
 
-  // Bloqueia se o grupo estiver na lista
-  if (grupoId && gruposBloqueados.includes(grupoId)) {
-    return false;
-  }
-
-  // Bloqueia se a mensagem contiver alguma palavra proibida
   if (mensagem && typeof mensagem === 'string') {
     const texto = mensagem.toLowerCase();
     if (palavrasProibidas.some(palavra => texto.includes(palavra))) {
@@ -53,7 +50,6 @@ export function proxySecurity(telefone, mensagem, grupoId) {
     }
   }
 
-  // Permite o processamento se passou pelos filtros
   return true;
 }
 
