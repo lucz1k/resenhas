@@ -28,8 +28,8 @@ export async function finalizarResenha(telefone, textoFinal, enviarMensagem, cal
 export function proxySecurity(telefone, mensagem, grupoId) {
   console.log('GrupoId recebido:', grupoId);
 
-  // Bloqueia todos os grupos (IDs terminam com @g.us)
-  if (grupoId && grupoId.endsWith('@g.us')) {
+  // Bloqueia todos os grupos (IDs de grupo têm hífen)
+  if (grupoId && grupoId.includes('-')) {
     return false;
   }
 
