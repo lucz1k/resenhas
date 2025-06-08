@@ -77,7 +77,7 @@ const resenhaController = {
           cia: dadosPre.cia || '',
           pelotao: dadosPre.pelotao || ''
         };
-        progresso.dadosCadastro = { ...dadosPre };
+        progresso.dadosCadastro = { ...progresso.dados }; // <-- Adicione esta linha
         await salvarProgresso(telefone, progresso);
         await enviarMensagem(telefone, 'Vamos começar a montar sua resenha. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
         return;
@@ -222,14 +222,25 @@ ${textoParaCorrigir}
       progresso.dadosCadastro.cia = texto;
       progresso.etapaAtual = 'cadastro_pelotao';
       await salvarProgresso(telefone, progresso);
-      await enviarMensagem(telefone, 'Qual seu *Pelotão*? (Ex: 1º Pelotão, pelotão bravo, pelotão 3)');
+      await enviarMensagem(
+        telefone,
+        'Qual seu *Pelotão*? (Ex: 1º Pelotão, pelotão bravo, pelotão 3)\n\nSe não quiser informar, digite "pular".'
+      );
       return;
     }
     if (progresso.etapaAtual === 'cadastro_pelotao') {
       if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
-      progresso.dadosCadastro.pelotao = texto;
+      // Permite pular o pelotão digitando "pular"
+      if (texto.trim().toLowerCase() === 'pular') {
+        progresso.dadosCadastro.pelotao = '';
+      } else {
+        progresso.dadosCadastro.pelotao = texto;
+      }
       await salvarUsuario(telefone, progresso.dadosCadastro);
-      await enviarMensagem(telefone, '✅ Cadastro realizado com sucesso!\nSe quiser iniciar uma resenha ou corrigir um histórico, escolha uma opção:\n\n' + MENU);
+      await enviarMensagem(
+        telefone,
+        '✅ Cadastro realizado com sucesso!\nSe quiser iniciar uma resenha ou corrigir um histórico, escolha uma opção:\n\n' + MENU
+      );
       await salvarProgresso(telefone, { etapaAtual: 'menu', dados: {} });
       return;
     }
