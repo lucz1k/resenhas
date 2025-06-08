@@ -141,6 +141,7 @@ ${textoParaCorrigir}
 
     // FLUXO DE CADASTRO
     if (progresso.etapaAtual === 'cadastro_nome') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       progresso.dadosCadastro.nome = texto;
       progresso.etapaAtual = 'cadastro_batalhao';
       await salvarProgresso(telefone, progresso);
@@ -148,6 +149,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'cadastro_batalhao') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       progresso.dadosCadastro.batalhao = texto;
       progresso.etapaAtual = 'cadastro_grandeComando';
       await salvarProgresso(telefone, progresso);
@@ -155,6 +157,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'cadastro_grandeComando') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       progresso.dadosCadastro.grandeComando = texto;
       progresso.etapaAtual = 'cadastro_cia';
       await salvarProgresso(telefone, progresso);
@@ -162,6 +165,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'cadastro_cia') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       progresso.dadosCadastro.cia = texto;
       progresso.etapaAtual = 'cadastro_pelotao';
       await salvarProgresso(telefone, progresso);
@@ -169,6 +173,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'cadastro_pelotao') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       progresso.dadosCadastro.pelotao = texto;
       await salvarUsuario(telefone, progresso.dadosCadastro);
       await enviarMensagem(telefone, '✅ Cadastro realizado com sucesso!\nSe quiser iniciar uma resenha ou corrigir um histórico, escolha uma opção:\n\n' + MENU);
@@ -178,6 +183,7 @@ ${textoParaCorrigir}
 
     // FLUXO DE EDIÇÃO
     if (progresso.etapaAtual === 'editar_nome') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       if (texto.toLowerCase() !== 'manter') {
         progresso.dadosCadastro.nome = texto;
       }
@@ -187,6 +193,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'editar_batalhao') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       if (texto.toLowerCase() !== 'manter') {
         progresso.dadosCadastro.batalhao = texto;
       }
@@ -196,6 +203,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'editar_grandeComando') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       if (texto.toLowerCase() !== 'manter') {
         progresso.dadosCadastro.grandeComando = texto;
       }
@@ -205,6 +213,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'editar_cia') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       if (texto.toLowerCase() !== 'manter') {
         progresso.dadosCadastro.cia = texto;
       }
@@ -214,6 +223,7 @@ ${textoParaCorrigir}
       return;
     }
     if (progresso.etapaAtual === 'editar_pelotao') {
+      if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
       if (texto.toLowerCase() !== 'manter') {
         progresso.dadosCadastro.pelotao = texto;
       }

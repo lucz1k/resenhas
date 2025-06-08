@@ -1,4 +1,3 @@
-
 # 📱 ResenhaApp - Assistente Operacional via WhatsApp
 
 O **ResenhaApp** é um assistente automatizado para elaboração de ocorrências policiais via WhatsApp. Ele coleta os dados operacionais por etapas e, ao final, gera uma resenha estruturada, formatada e salva no Google Drive, além de reenviar o conteúdo final ao usuário no próprio WhatsApp.
@@ -13,6 +12,9 @@ O **ResenhaApp** é um assistente automatizado para elaboração de ocorrências
 - Integração com a Z-API para envio e recebimento de mensagens WhatsApp
 - Salvamento automático da resenha no Google Drive
 - Proteção contra abuso e controle por número
+- Cadastro e edição de dados do usuário (nome, batalhão, grande comando, CIA, pelotão)
+- Correção de histórico via texto ou áudio (transcrição automática)
+- Bloqueio automático de mensagens vindas de grupos
 
 ---
 
@@ -96,9 +98,11 @@ https://SEU_BACKEND.onrender.com/api/resenha/webhook/whatsapp
 ├── services
 │   ├── zapi.js
 │   ├── openai.js
+│   ├── speechToText.js
 │   └── drive.js
 ├── db
-│   └── progresso.js
+│   ├── progresso.js
+│   └── usuarios.js
 ├── utils
 │   └── proxy.js
 ├── routes
@@ -112,12 +116,28 @@ https://SEU_BACKEND.onrender.com/api/resenha/webhook/whatsapp
 
 ---
 
+## 📝 Fluxo do Bot
+
+- O usuário inicia a conversa e recebe um menu com as opções:
+  1. Corrigir um histórico (texto ou áudio)
+  2. Fazer uma resenha (dados pré-preenchidos se já cadastrados)
+  3. Cadastrar meus dados (nome, batalhão, grande comando, CIA, pelotão)
+  4. Editar meus dados
+- O comando `#reset` pode ser enviado a qualquer momento para voltar ao menu inicial.
+- Mensagens de grupos são automaticamente ignoradas.
+- O histórico pode ser enviado em texto ou áudio (transcrição automática via OpenAI Whisper).
+
+---
+
 ## 📌 To Do
 
 - [x] Fluxo completo de coleta
 - [x] Integração com OpenAI
 - [x] Envio da resenha final no WhatsApp
 - [x] Salvamento no Google Drive
+- [x] Cadastro e edição de dados do usuário
+- [x] Correção de histórico por áudio
+- [x] Bloqueio de mensagens em grupos
 - [ ] Exportar como PDF direto
 - [ ] Painel web para visualização das resenhas
 
