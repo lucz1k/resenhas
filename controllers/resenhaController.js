@@ -70,7 +70,14 @@ const resenhaController = {
       if (texto === '2' || /resenha/i.test(texto)) {
         const dadosPre = await buscarUsuario(telefone) || {};
         progresso.etapaAtual = 'grandeComando';
-        progresso.dados = { ...dadosPre };
+        progresso.dados = {
+          nome: dadosPre.nome || '',
+          batalhao: dadosPre.batalhao || '',
+          grandeComando: dadosPre.grandeComando || '',
+          cia: dadosPre.cia || '',
+          pelotao: dadosPre.pelotao || ''
+        };
+        progresso.dadosCadastro = { ...dadosPre };
         await salvarProgresso(telefone, progresso);
         await enviarMensagem(telefone, 'Vamos começar a montar sua resenha. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
         return;
@@ -145,7 +152,7 @@ ${textoParaCorrigir}
       progresso.dadosCadastro.nome = texto;
       progresso.etapaAtual = 'cadastro_batalhao';
       await salvarProgresso(telefone, progresso);
-      await enviarMensagem(telefone, 'Qual seu *batalhão*?');
+      await enviarMensagem(telefone, 'Qual seu *batalhão*? (Ex: 10M, 10I, 3º BPChq)');
       return;
     }
     if (progresso.etapaAtual === 'cadastro_batalhao') {
@@ -153,15 +160,61 @@ ${textoParaCorrigir}
       progresso.dadosCadastro.batalhao = texto;
       progresso.etapaAtual = 'cadastro_grandeComando';
       await salvarProgresso(telefone, progresso);
-      await enviarMensagem(telefone, 'Qual seu *grande comando*?');
+      await enviarMensagem(telefone, 'Qual seu *grande comando*? (Exemplos: CPA-M/6, CPI-5, CPChq, CPC, CPM)');
       return;
     }
     if (progresso.etapaAtual === 'cadastro_grandeComando') {
       if (!progresso.dadosCadastro) progresso.dadosCadastro = {};
-      progresso.dadosCadastro.grandeComando = texto;
+      // Normalização e validação conforme grandecomando.js
+      let textoGC = texto.trim().toUpperCase().replace(/\s+/g, ' ');
+      if (/^CPA[\-\/]M[\-\/]?\d+$/.test(textoGC)) {
+        textoGC = textoGC.replace(/CPA[\-\/]?M[\-\/]?(\d+)/, 'CPA-M/$1');
+      } else if (/^CPI[\-\/]?\d+$/.test(textoGC)) {
+        textoGC = textoGC.replace(/CPI[\-\/]?(\d+)/, 'CPI-$1');
+      } else if (/^CPA\s*M\s*\d+$/.test(textoGC)) {
+        textoGC = textoGC.replace(/CPA\s*M\s*(\d+)/, 'CPA-M/$1');
+      } else if (/^CPI\s*\d+$/.test(textoGC)) {
+        textoGC = textoGC.replace(/CPI\s*(\d+)/, 'CPI-$1');
+      } else if (/^M\d+$/i.test(textoGC)) {
+        textoGC = textoGC.replace(/^M(\d+)$/i, 'CPA-M/$1');
+      } else if (/^I\d+$/i.test(textoGC)) {
+        textoGC = textoGC.replace(/^I(\d+)$/i, 'CPI-$1');
+      } else if (/^CPA\/M\d+$/i.test(textoGC)) {
+        textoGC = textoGC.replace(/^CPA\/M(\d+)$/i, 'CPA-M/$1');
+      } else if (/^CPI\/\d+$/i.test(textoGC)) {
+        textoGC = textoGC.replace(/^CPI\/(\d+)$/i, 'CPI-$1');
+      } else {
+        textoGC = textoGC.replace(/\s*\/\s*/, '/').replace(/\s+/g, '');
+      }
+
+      const formatosValidos = [
+        /^CPA-M\/\d+$/,  // Ex: CPA-M/6
+        /^CPI-\d+$/,     // Ex: CPI-1
+        /^CPCHQ$/,       // CPChq
+        /^CPC$/,         // CPC
+        /^CPM$/          // CPM
+      ];
+      const valido = formatosValidos.some((regex) => regex.test(textoGC));
+
+      if (!valido) {
+        await enviarMensagem(
+          telefone,
+          '❌ Formato inválido para Grande Comando.\n\n' +
+          'Exemplos aceitos:\n' +
+          '• CPA-M/6, CPA/M6, CPA M6, CPA-M6, M6 (todos viram CPA-M/6)\n' +
+          '• CPI-5, CPI/5, CPI 5, CPI-5, I5 (todos viram CPI-5)\n' +
+          '• CPChq\n' +
+          '• CPC\n' +
+          '• CPM\n\n' +
+          'Digite o número correspondente ao seu comando, por exemplo: "CPA-M/6", "CPI-5", "CPChq", "M6", "I5".'
+        );
+        return;
+      }
+
+      progresso.dadosCadastro.grandeComando = textoGC;
       progresso.etapaAtual = 'cadastro_cia';
       await salvarProgresso(telefone, progresso);
-      await enviarMensagem(telefone, 'Qual sua *CIA*?');
+      await enviarMensagem(telefone, 'Qual sua *CIA*? (Ex: 1ª CIA, 2 CIA, CIA ROCAM)');
       return;
     }
     if (progresso.etapaAtual === 'cadastro_cia') {
@@ -169,7 +222,7 @@ ${textoParaCorrigir}
       progresso.dadosCadastro.cia = texto;
       progresso.etapaAtual = 'cadastro_pelotao';
       await salvarProgresso(telefone, progresso);
-      await enviarMensagem(telefone, 'Qual seu *Pelotão*?');
+      await enviarMensagem(telefone, 'Qual seu *Pelotão*? (Ex: 1º Pelotão, pelotão bravo, pelotão 3)');
       return;
     }
     if (progresso.etapaAtual === 'cadastro_pelotao') {
