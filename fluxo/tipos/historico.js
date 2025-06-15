@@ -25,7 +25,7 @@ export async function executarHistorico(resposta, dados, numero) {
   }
 
   const prompt = `
-Corrija o português do texto. Não use emojis ou linguagem coloquial ou altere o sentido. Corrija apenas a caixa alta conforme a norma gramatical. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
+Corrija o texto abaixo para português correto, sem emojis, sem linguagem coloquial e sem alterar o sentido. Use maiúsculas e minúsculas conforme a norma padrão. Se houver palavras proibidas, substitua por "-PALAVRA PROIBIDA-".
 
 Texto:
 ${textoParaCorrigir}
@@ -39,12 +39,20 @@ ${textoParaCorrigir}
       { role: 'user', content: prompt }
     ]);
 
+    console.log('[HISTÓRICO][OPENAI][PROMPT]', prompt);
     console.log('[HISTÓRICO][OPENAI][RESPOSTA]', JSON.stringify(respostaGPT, null, 2));
 
     historicoFinal = (typeof respostaGPT === 'string'
       ? respostaGPT
       : respostaGPT?.choices?.[0]?.message?.content || '[ERRO NA GERAÇÃO DO HISTÓRICO]'
     ).trim();
+
+    // Loga comparação entre entrada e saída para depuração
+    if (historicoFinal !== textoParaCorrigir) {
+      console.log('[HISTÓRICO][CORRIGIDO] O GPT fez correção.');
+    } else {
+      console.warn('[HISTÓRICO][NÃO CORRIGIDO] O GPT devolveu o texto igual ao original.');
+    }
 
     if (historicoFinal === '[ERRO NA GERAÇÃO DO HISTÓRICO]') {
       console.error('[HISTÓRICO][ERRO] Resposta inesperada da OpenAI:', JSON.stringify(respostaGPT, null, 2));

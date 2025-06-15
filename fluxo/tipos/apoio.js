@@ -10,7 +10,7 @@ export async function executarApoio(inputUsuario, dadosProgresso, numero) {
   const texto = inputUsuario.trim();
 
  // Verifica se o usuário deseja pular a etapa
-if (['pular', 'pula', 'skip', 'ignorar'].includes(texto.toLowerCase())) {
+if (['pular', 'pula', 'skip', 'ignorar', 'não', 'nao', 'não quero', 'nao quero'].includes(texto.toLowerCase())) {
   return {
     proximaEtapa: 'envolvidos',
     mensagemResposta:

@@ -56,9 +56,7 @@ export async function montarResenhaFinal(dados) {
     ? armamentos.filter(Boolean).map(formatarTextoArmamentos).join('\n')
     : armamentos;
 
-  const historicoCompleto = formaAcionamento
-    ? `Equipe ${formaAcionamento.toLowerCase()}.\n\n${historico}`.trim()
-    : historico;
+  const historicoCompleto = historico;
 
   // Formatação correta para equipe
   let equipeTexto = '';
@@ -127,10 +125,10 @@ export async function montarResenhaFinal(dados) {
     bopc && `*BOPC*: ${bopc}`,
     delegado && `*DELEGADO*: ${delegado}`,
     '',
-    (equipeTexto && `*EQUIPE*`),
+    equipeTexto && `*EQUIPE*`,
     equipeTexto,
     '',
-    (apoiosTexto && `*APOIOS*`),
+    apoiosTexto && `*APOIOS*`,
     apoiosTexto,
     '',
     ...blocoEnvolvidos,
@@ -143,11 +141,11 @@ export async function montarResenhaFinal(dados) {
     '',
     '*VAMOS TODOS JUNTOS, NINGUÉM FICA PARA TRÁS*'
   ]
-    .filter((linha, idx, arr) => {
-      if (typeof linha === 'string') return true;
-      return Boolean(linha);
-    })
-    .join('\n');
+    // Remove linhas vazias, nulas ou só com espaços para evitar blocos em branco
+    .filter(linha => typeof linha === 'string' && linha.trim().length > 0);
 
-  return resenha;
+  let textoFinal = resenha.join('\n');
+  // Remove múltiplas linhas em branco consecutivas
+  textoFinal = textoFinal.replace(/\n{3,}/g, '\n\n');
+  return textoFinal;
 }

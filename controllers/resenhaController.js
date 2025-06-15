@@ -21,7 +21,11 @@ const resenhaController = {
   async receberMensagem(mensagem) {
     const telefone = mensagem.phone || mensagem.from || mensagem.chatId || mensagem.participantLid || null;
     const texto = (mensagem.body || mensagem.text?.message || '').trim();
-    const audioUrl = mensagem.audioUrl || mensagem.audio?.audioUrl || mensagem.audioPath || null;
+    const audioUrl =
+      mensagem.audioUrl ||
+      (mensagem.audio && (mensagem.audio.audioUrl || mensagem.audio.url)) ||
+      mensagem.audioPath ||
+      null;
     const ip = mensagem?.sender?.ip || 'desconhecido';
 
     // Ignora mensagens da própria instância
@@ -92,6 +96,7 @@ const resenhaController = {
 
       // Aceita áudio: se não veio texto, tenta transcrever o áudio
       if (!textoParaCorrigir && audioUrl) {
+        console.log('[AUDIO DEBUG] audioUrl extraído:', audioUrl);
         try {
           textoParaCorrigir = await audioParaTexto(audioUrl);
         } catch (err) {
