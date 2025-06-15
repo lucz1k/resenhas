@@ -19,8 +19,9 @@ const MENU = [
 
 const resenhaController = {
   async receberMensagem(mensagem) {
-    const telefone = mensagem.from;
-    const texto = (mensagem.body || '').trim();
+    const telefone = mensagem.phone || mensagem.from || mensagem.chatId || mensagem.participantLid || null;
+    const texto = (mensagem.body || mensagem.text?.message || '').trim();
+    const audioUrl = mensagem.audioUrl || mensagem.audio?.audioUrl || mensagem.audioPath || null;
     const ip = mensagem?.sender?.ip || 'desconhecido';
 
     // Ignora mensagens da própria instância
@@ -90,9 +91,9 @@ const resenhaController = {
       let textoParaCorrigir = texto;
 
       // Aceita áudio: se não veio texto, tenta transcrever o áudio
-      if (!textoParaCorrigir && (mensagem.audioPath || mensagem.audioUrl)) {
+      if (!textoParaCorrigir && audioUrl) {
         try {
-          textoParaCorrigir = await audioParaTexto(mensagem.audioPath || mensagem.audioUrl);
+          textoParaCorrigir = await audioParaTexto(audioUrl);
         } catch (err) {
           await enviarMensagem(telefone, '❌ Não foi possível transcrever o áudio. Envie novamente ou tente em texto.');
           return;
