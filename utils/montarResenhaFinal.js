@@ -88,6 +88,25 @@ export async function montarResenhaFinal(dados) {
     apoiosTexto = apoios;
   }
 
+  // Checa se há algum envolvido
+  const temEnvolvidos =
+    (envolvidos.vitimas && envolvidos.vitimas.length > 0) ||
+    (envolvidos.autores && envolvidos.autores.length > 0) ||
+    (envolvidos.testemunhas && envolvidos.testemunhas.length > 0);
+
+  const blocoEnvolvidos = temEnvolvidos
+    ? [
+        '*ENVOLVIDOS*',
+        (envolvidos.vitimas && envolvidos.vitimas.length > 0) && '*VÍTIMAS*',
+        formatarEnvolvidos(envolvidos.vitimas),
+        (envolvidos.autores && envolvidos.autores.length > 0) && '*AUTORES*',
+        formatarEnvolvidos(envolvidos.autores),
+        (envolvidos.testemunhas && envolvidos.testemunhas.length > 0) && '*TESTEMUNHAS*',
+        formatarEnvolvidos(envolvidos.testemunhas),
+        ''
+      ]
+    : [];
+
   // Montagem fiel ao modelo solicitado, mas só inclui linhas não vazias
   const resenha = [
     `*SECRETARIA DA SEGURANÇA PÚBLICA*`,
@@ -114,14 +133,7 @@ export async function montarResenhaFinal(dados) {
     (apoiosTexto && `*APOIOS*`),
     apoiosTexto,
     '',
-    `*ENVOLVIDOS*`,
-    (envolvidos.vitimas && envolvidos.vitimas.length > 0) && `*VÍTIMAS*`,
-    formatarEnvolvidos(envolvidos.vitimas),
-    (envolvidos.autores && envolvidos.autores.length > 0) && `*AUTORES*`,
-    formatarEnvolvidos(envolvidos.autores),
-    (envolvidos.testemunhas && envolvidos.testemunhas.length > 0) && `*TESTEMUNHAS*`,
-    formatarEnvolvidos(envolvidos.testemunhas),
-    '',
+    ...blocoEnvolvidos,
     veiculosTexto && `*VEÍCULOS*\n${veiculosTexto}`,
     objetosTexto && `*OBJETOS*\n${objetosTexto}`,
     armamentosTexto && `*ARMAMENTOS*\n${armamentosTexto}`,
@@ -132,8 +144,6 @@ export async function montarResenhaFinal(dados) {
     '*VAMOS TODOS JUNTOS, NINGUÉM FICA PARA TRÁS*'
   ]
     .filter((linha, idx, arr) => {
-      // Mantém linhas vazias para espaçamento, mas remove campos não preenchidos
-      // (campos opcionais só entram se não forem string vazia ou undefined)
       if (typeof linha === 'string') return true;
       return Boolean(linha);
     })

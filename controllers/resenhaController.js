@@ -13,8 +13,6 @@ const MENU = [
   'Escolha uma opção:',
   '1️⃣ *Corrigir um histórico*',
   '2️⃣ *Fazer uma resenha*',
-  '3️⃣ *Cadastrar meus dados*',
-  '4️⃣ *Editar meus dados*',
   '',
   'ℹ️ *Dica*: Se quiser voltar ao menu inicial a qualquer momento, envie *#reset*.'
 ].join('\n');
@@ -77,26 +75,12 @@ const resenhaController = {
           cia: dadosPre.cia || '',
           pelotao: dadosPre.pelotao || ''
         };
-        progresso.dadosCadastro = { ...progresso.dados }; // <-- Adicione esta linha
+        progresso.dadosCadastro = { ...progresso.dados };
         await salvarProgresso(telefone, progresso);
         await enviarMensagem(telefone, 'Vamos começar a montar sua resenha. Informe o *GRANDE COMANDO* (ex: cpa m6, cpi 1).');
         return;
       }
-      if (texto === '3' || /cadastrar/i.test(texto)) {
-        progresso.etapaAtual = 'cadastro_nome';
-        progresso.dadosCadastro = {};
-        await salvarProgresso(telefone, progresso);
-        await enviarMensagem(telefone, 'Vamos cadastrar seus dados!\nQual seu *nome* completo?');
-        return;
-      }
-      if (texto === '4' || /editar/i.test(texto)) {
-        const dadosAtuais = await buscarUsuario(telefone) || {};
-        progresso.etapaAtual = 'editar_nome';
-        progresso.dadosCadastro = { ...dadosAtuais };
-        await salvarProgresso(telefone, progresso);
-        await enviarMensagem(telefone, `Vamos editar seus dados!\nSeu nome atual é: *${dadosAtuais.nome || 'não cadastrado'}*\nEnvie o novo nome ou digite "manter" para não alterar.`);
-        return;
-      }
+      // Removido o bloco de edição (opção 4)
       await enviarMensagem(telefone, 'Por favor, escolha uma opção válida:\n\n' + MENU);
       return;
     }
@@ -105,11 +89,10 @@ const resenhaController = {
     if (progresso.etapaAtual === 'corrigirHistorico') {
       let textoParaCorrigir = texto;
 
-      // Verifica se veio áudio (exemplo: mensagem.audioPath ou mensagem.audioUrl)
+      // Aceita áudio: se não veio texto, tenta transcrever o áudio
       if (!textoParaCorrigir && (mensagem.audioPath || mensagem.audioUrl)) {
         try {
-          // Se usar áudio, descomente a linha abaixo:
-          // textoParaCorrigir = await audioParaTexto(mensagem.audioPath || mensagem.audioUrl);
+          textoParaCorrigir = await audioParaTexto(mensagem.audioPath || mensagem.audioUrl);
         } catch (err) {
           await enviarMensagem(telefone, '❌ Não foi possível transcrever o áudio. Envie novamente ou tente em texto.');
           return;
@@ -316,7 +299,13 @@ ${textoParaCorrigir}
     }
     try {
       const { proximaEtapa, mensagemResposta, dadoExtraido } = await executor(texto, progresso.dados, etapa.chave);
-      progresso.dados[progresso.etapaAtual] = dadoExtraido;
+      // Só salve se não for a etapa do histórico
+      if (etapa.chave !== 'historico') {
+        progresso.dados[progresso.etapaAtual] = dadoExtraido;
+      } else if (etapa.chave === 'historico' && dadoExtraido) {
+        // Garante que o histórico corrigido sempre vai para o campo correto
+        progresso.dados.historico = dadoExtraido;
+      }
       progresso.etapaAtual = proximaEtapa;
       await salvarProgresso(telefone, progresso);
       await enviarMensagem(telefone, mensagemResposta);

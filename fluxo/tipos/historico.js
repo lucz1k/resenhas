@@ -57,6 +57,8 @@ ${textoParaCorrigir}
 
   dados.historico = historicoFinal;
 
+  console.log('[RESENHA FINAL] Historico:', JSON.stringify(historicoFinal));
+
   return {
     proximaEtapa: 'FINALIZAR',
     mensagemResposta: '✅ Todos os dados foram coletados. A resenha será *gerada e enviada.*',
